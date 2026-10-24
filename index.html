@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EMT Trauma Study Tool</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7f9;--card:#fff;--ink:#14202e;--mute:#566475;--line:#d5dbe3;--brand:#0b5cab;--alert:#c8391a;--ok:#1b7a43;--okbg:#e2f3e8;--badbg:#fbe5df;--hi:#fff2c2;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1620;--card:#18222e;--ink:#e8eef5;--mute:#9aa9ba;--line:#2c3a4a;--brand:#6db0f2;--alert:#ff8466;--ok:#6fd49a;--okbg:#14301f;--badbg:#3a1d16;--hi:#4a3f12;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:20px 16px 8px;max-width:820px;margin:auto}
+h1{font:700 1.7rem/1.2 Georgia,"Times New Roman",serif;margin:0 0 4px}
+.sub{color:var(--mute);margin:0;font-size:.92rem}
+nav{display:flex;gap:6px;max-width:820px;margin:12px auto 0;padding:0 16px;overflow-x:auto}
+nav button{flex:1 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 14px;border-radius:8px;font:600 .95rem inherit;cursor:pointer}
+nav button[aria-selected=true]{background:var(--brand);border-color:var(--brand);color:#fff}
+@media (prefers-color-scheme:dark){nav button[aria-selected=true]{color:#06121f}}
+main{max-width:820px;margin:16px auto 40px;padding:0 16px}
+section[hidden]{display:none}
+details{background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:8px}
+summary{padding:12px 14px;font-weight:700;cursor:pointer}
+details>div{padding:0 14px 12px;overflow-x:auto}
+details ul{margin:6px 0;padding-left:20px}
+li{margin:3px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:6px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--bg)}
+mark{background:var(--hi);color:inherit;padding:0 3px;border-radius:3px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.fc{min-height:190px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.15rem;cursor:pointer;user-select:none}
+.fc.back{border-color:var(--brand);background:var(--okbg)}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:8px;font:600 .92rem inherit;cursor:pointer}
+.btn.p{background:var(--brand);border-color:var(--brand);color:#fff}
+@media (prefers-color-scheme:dark){.btn.p{color:#06121f}}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:11px 13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font:inherit;cursor:pointer}
+.opt.good{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--alert)}
+.exp{margin-top:10px;padding:10px 12px;border-left:4px solid var(--brand);background:var(--bg)}
+.meta{color:var(--mute);font-size:.88rem}
+button:focus-visible,summary:focus-visible,.fc:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.note{background:var(--hi);border-radius:8px;padding:10px 12px;font-size:.92rem;margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+<h1>EMT trauma study tool</h1>
+<p class="sub">Built from Emergency Care and Transportation of the Sick and Injured (11th ed.) Ch. 24–32, your Section 6.1/6.2 notes and the Fisdap trauma guide, with 2021–2025 updates.</p>
+</header>
+<nav role="tablist" id="tabs"></nav>
+<main>
+<section id="ref"></section>
+<section id="cards" hidden></section>
+<section id="quiz" hidden></section>
+<section id="new" hidden></section>
+</main>
+<script>
+var REF=[
+["Mechanism of injury and triage",`<ul><li>Kinetic energy = ½ × mass × velocity². <mark>Speed matters more than mass.</mark></li>
+<li>Five crash types: frontal, lateral (T-bone), rear-end, rotational, rollover. Ejection and death in the compartment are high-risk.</li>
+<li>Significant fall: adult &gt;20 ft (about 3× height for a child, roughly &gt;10 ft). Note surface, height and body part that landed first.</li>
+<li>Penetrating: low velocity (hand-propelled), medium (handgun, arrow), high (rifle, with <b>cavitation</b>). Always look for the exit wound.</li>
+<li>Blast: <b>primary</b> pressure wave (ears, lungs, bowel), <b>secondary</b> flying debris, <b>tertiary</b> thrown body, <b>quaternary/misc</b> burns, crush, toxic exposure.</li>
+<li><b>Emergency move</b>: immediate danger, little spinal care. <b>Urgent move</b>: rapid extrication with manual stabilization.</li>
+<li>Rapid trauma assessment order: head, neck, chest, abdomen, pelvis, extremities, back, using <b>DCAP-BTLS</b> (deformities, contusions, abrasions, punctures, burns, tenderness, lacerations, swelling).</li></ul>`],
+["Bleeding control and shock",`<ul><li>Order: direct pressure / pressure dressing, then <mark>tourniquet</mark> for life-threatening limb bleeding, wound packing with hemostatic gauze for junctional areas, pelvic binder for suspected pelvic fracture.</li>
+<li>Tourniquet: place high and tight (proximal to the wound), tighten until bleeding stops, add a second one if needed, <b>write the time</b>, do not loosen in the field.</li>
+<li>Epistaxis: pinch the soft nose and lean forward; don't let the patient swallow blood.</li>
+<li>Suspect internal bleeding with a consistent MOI plus shock signs and no other cause. Treat shock, nothing by mouth, rapid transport to a surgical hospital.</li></ul>
+<table><tr><th>Compensated</th><th>Decompensated</th></tr><tr><td>Anxiety, restlessness, impending doom; weak rapid pulse; pale, cool, moist skin; rapid shallow breathing; thirst; pulse pressure narrowing</td><td>Systolic &lt;90, absent radial pulse; labored or irregular breathing; ashen, mottled skin; dull eyes, dilated pupils; low urine output</td></tr></table>
+<table><tr><th>Shock type</th><th>Cause and key clue</th></tr>
+<tr><td>Hemorrhagic / hypovolemic</td><td>Volume loss; pale, cool, clammy; tachycardia</td></tr>
+<tr><td>Obstructive</td><td>Tension pneumothorax, cardiac tamponade</td></tr>
+<tr><td>Cardiogenic</td><td>Pump failure, including myocardial contusion</td></tr>
+<tr><td>Neurogenic</td><td>Spinal injury above T6; <mark>warm, dry, pink skin, bradycardia or normal HR, low BP</mark></td></tr>
+<tr><td>Septic / anaphylactic</td><td>Vasodilation; fever and infection source, or allergen exposure with hives and wheezing</td></tr></table>`],
+["Soft-tissue injuries and burns",`<ul><li><b>Abrasion</b> scrape; <b>laceration</b> jagged cut; <b>incision</b> smooth cut; <b>contusion</b> bruise; <b>ecchymosis</b> discoloration showing bleeding; <b>hematoma</b> pooled blood; <b>avulsion</b> flap or torn-away tissue; <b>amputation</b> severed part; <b>evisceration</b> organs outside the body.</li>
+<li><b>Avulsion:</b> brush off loose debris, replace flap to anatomic position, control bleeding, dry sterile dressing. Don't irrigate or complete the tear.</li>
+<li><b>Amputation:</b> control bleeding (tourniquet if needed). Wrap part in sterile gauze moistened with saline, seal in a bag, keep cool on ice. Don't let it freeze or sit directly in ice or water.</li>
+<li><b>Evisceration:</b> don't push organs back. Cover with moist sterile dressing, then an occlusive cover; flex hips and knees if no spinal concern.</li>
+<li><b>Impaled object:</b> stabilize in place and control bleeding. <mark>Remove only if it blocks the airway or prevents CPR.</mark></li>
+<li><b>Compartment syndrome</b> (6 Ps): pain, pressure, pallor, paralysis, paresthesia, pulselessness (later). <b>Crush syndrome</b>: prolonged entrapment leading to hyperkalemia and kidney failure.</li></ul>
+<b>Burns</b><ul><li>Depth: superficial (epidermis, red, painful), partial thickness (dermis, blisters), full thickness (leathery, charred, may be painless).</li>
+<li>Rule of nines, adult: head 9, each arm 9, front trunk 18, back 18, each leg 18, genitals 1. Child: head 18, each leg 14. Patient’s palm and fingers ≈ 1% BSA.</li>
+<li>Critical: full thickness &gt;10% BSA; hands, feet, face, genitals or airway; circumferential; inhalation signs (soot, hoarseness, singed hair); burns plus fractures; age &lt;5 or &gt;55.</li>
+<li>Carbon monoxide binds hemoglobin, so <mark>SpO₂ can read falsely normal</mark>. Steam burns: secure the airway early. Stop the burning, cool minor burns briefly, cover with dry sterile dressing, keep warm.</li></ul>`],
+["Head and spine injuries",`<ul><li><b>GCS</b>: eyes 4 + verbal 5 + motor 6 = 3–15. ≤8 is severe.</li>
+<li><b>Cushing’s reflex</b> (rising ICP): <mark>hypertension with widening pulse pressure, bradycardia, irregular respirations</mark>. Late signs: unequal or blown pupil, posturing.</li>
+<li>Epidural: arterial bleed, <b>lucid interval</b>, rapid deterioration. Subdural: venous, slower, common in older adults. Concussion: functional, no visible damage. Contusion: bruised brain tissue. Primary injury is direct; secondary injury comes from hypoxia and hypotension.</li>
+<li>Treat TBI: airway with jaw thrust, high-flow oxygen, keep SpO₂ ≥94%, avoid hypotension, ventilate only for herniation signs, check pupils and GCS serially.</li>
+<li>Scalp wounds bleed heavily. Control with direct pressure, but don’t press on a depressed skull fracture.</li>
+<li>Spinal injury complications: neurogenic shock, respiratory failure (injury above C3–C5), loss of motor and sensory function, priapism.</li>
+<li><b>Spinal motion restriction (SMR)</b> is based on mechanism plus findings: midline pain or tenderness, neuro deficit, altered mental status, intoxication, distracting injury, or high-risk MOI. Use a collar and stretcher; the long board is an extrication tool, not treatment.</li></ul>`],
+["Chest injuries",`<table><tr><th>Condition</th><th>Key findings</th><th>Care</th></tr>
+<tr><td>Open pneumothorax (sucking wound)</td><td>Sucking sound, bubbling blood</td><td>Occlusive dressing taped on three sides or vented seal; monitor for tension</td></tr>
+<tr><td>Tension pneumothorax</td><td>Absent or decreased breath sounds on one side, hyperresonance, JVD, falling BP, late tracheal deviation</td><td>Oxygen, rapid transport, ALS for decompression; burp the seal if it’s from an occlusive dressing</td></tr>
+<tr><td>Cardiac tamponade</td><td><mark>Beck’s triad:</mark> JVD, muffled heart tones, hypotension; <b>breath sounds equal</b>; narrowing pulse pressure</td><td>Oxygen, rapid transport, ALS</td></tr>
+<tr><td>Flail chest</td><td>Paradoxical motion, pain, shallow breathing</td><td>Oxygen, assist ventilation if needed, stabilize with bulky dressing</td></tr>
+<tr><td>Commotio cordis</td><td>Blunt blow to the chest (e.g., baseball) causes sudden arrest, V-fib</td><td>CPR and AED immediately</td></tr>
+<tr><td>Hemothorax</td><td>Dull percussion, shock signs</td><td>Oxygen, treat shock, transport</td></tr></table>
+<ul><li><b>Subcutaneous emphysema</b>: crackling “Rice Krispies” under the skin from air in tissue. <b>Crepitus</b>: grating of bone ends.</li>
+<li>Referred pain: <b>Kehr’s sign</b> is left shoulder pain from splenic bleeding irritating the diaphragm.</li></ul>`],
+["Abdomen, pelvis and orthopedics",`<ul><li>Solid organs (liver, spleen, kidneys) bleed; hollow organs (bowel, stomach) leak and cause peritonitis. Signs: rigidity, guarding, distention, bruising (Cullen’s periumbilical, Grey Turner flank).</li>
+<li>Pelvis: compress once only; if unstable or painful, don’t re-examine, bind. Expect major blood loss.</li>
+<li>Check pulse, motor, sensation (PMS) before and after splinting. Splint joints above and below. Realign only if pulseless or severely deformed, per protocol.</li>
+<li>Traction splint: isolated midshaft femur fracture. Avoid if pelvic, hip, knee or lower-leg injury or partial amputation.</li>
+<li>Sprain = ligament; strain = muscle or tendon; dislocation = joint ends separated.</li></ul>`],
+["Environmental emergencies",`<ul><li>Heat: cramps (cool, hydrate), exhaustion (cool, sweating, hydrate), <mark>heat stroke</mark> (altered mental status, hot skin; rapid cooling and transport, life-threatening).</li>
+<li>Hypothermia: remove wet clothing, insulate, handle gently, passive then active rewarming; check pulse up to 30–45 seconds.</li>
+<li>Frostbite: don’t rub, don’t rewarm if refreezing is possible. Drowning: airway and ventilation first, and suspect spinal injury only with diving, trauma or alcohol.</li></ul>`],
+["Barriers to CPR in trauma",`<ul><li>Clothing, positioning, uneven or soft surface, blood or vomit in the airway, impaled object in the chest or airway, and bystander or scene hazards can all interrupt CPR.</li>
+<li>Remove clothing from the chest, place on a firm surface, suction, and remove an impaled object only if it prevents CPR. Traumatic arrest needs bleeding control, airway and rapid transport; check for DNR or obvious death signs.</li></ul>`]
+];
+var FC=[
+["Kinetic energy formula","KE = ½ m v² (speed counts squared)"],
+["Cushing’s triad","Hypertension, bradycardia, irregular respirations (rising ICP)"],
+["Beck’s triad","JVD, muffled heart tones, hypotension (tamponade)"],
+["Tension pneumothorax vs tamponade","Tension: unequal breath sounds. Tamponade: equal breath sounds, muffled heart tones"],
+["Kehr’s sign","Left shoulder pain from splenic injury irritating diaphragm"],
+["Subcutaneous emphysema","Air under the skin, crackling feel"],
+["Crepitus","Grating sensation of bone ends"],
+["Ecchymosis","Skin discoloration from bleeding in a closed wound"],
+["Commotio cordis","Blunt chest blow causing V-fib; CPR and AED"],
+["Airway opening in trauma","Jaw thrust (no head tilt) with manual stabilization"],
+["Indication for tourniquet","Life-threatening limb bleeding not controlled by direct pressure"],
+["Tourniquet placement","High and tight, tighten until bleeding stops, note time, don’t loosen"],
+["Epidural hematoma","Arterial bleed, lucid interval"],
+["Subdural hematoma","Venous bleed, slower onset, older adults and alcohol users"],
+["GCS components","Eyes 4, verbal 5, motor 6; range 3–15"],
+["Adult rule of nines","Head 9, arms 9 each, front 18, back 18, legs 18 each, genitals 1"],
+["Child head and leg in rule of nines","Head 18, each leg 14"],
+["Rule of palms","Patient’s palm ≈ 1% BSA"],
+["Critical burn criteria","Full thickness >10%, face/hands/feet/genitals/airway, circumferential, inhalation, <5 or >55 y"],
+["Open chest wound care","Occlusive dressing taped on three sides, or vented chest seal"],
+["Evisceration care","Moist sterile dressing and occlusive cover; don’t replace organs"],
+["Impaled object","Stabilize; remove only if it blocks airway or interferes with CPR"],
+["Amputated part care","Moist sterile gauze, bag, keep cool; no direct ice"],
+["Neurogenic shock","Warm, dry skin; bradycardia or normal HR; hypotension"],
+["Compensated shock","Anxiety, tachycardia, pale cool skin, narrowing pulse pressure, normal BP"],
+["Decompensated shock","Systolic <90, absent radial pulse, mottled skin"],
+["Compartment syndrome","Pain, pressure, pallor, paralysis, paresthesia, pulselessness"],
+["Crush syndrome","Prolonged entrapment; release causes hyperkalemia and kidney failure"],
+["Blast injury types","Primary pressure, secondary debris, tertiary thrown, quaternary burns/toxins"],
+["Significant fall","Adult >20 ft; child about 10 ft or 3× height"],
+["Epistaxis care","Pinch nose, lean forward"],
+["Traction splint contraindications","Pelvic, hip, knee, lower-leg injury, partial amputation"],
+["Emergency vs urgent move","Emergency: immediate danger, little spinal care. Urgent: rapid with manual stabilization"],
+["Primary vs secondary brain injury","Primary: direct damage at impact. Secondary: later harm from hypoxia, hypotension, swelling, bleeding"],
+["Concussion","Temporary functional disruption without visible structural damage; confusion, amnesia, headache"],
+["Cerebral contusion","Bruised brain tissue; deficits last longer than a concussion"],
+["Subarachnoid hemorrhage","Bleeding in the space around the brain; sudden severe headache, stiff neck"],
+["Basilar skull fracture signs","Raccoon eyes, Battle’s sign (mastoid bruising), clear or bloody fluid from nose or ears"],
+["Brain herniation signs","Unilateral blown pupil, posturing, Cushing’s reflex, falling GCS"],
+["Decorticate vs decerebrate","Decorticate: arms flexed toward the core. Decerebrate: arms and legs rigidly extended (worse)"],
+["Spinal cord injury complications","Neurogenic shock, respiratory failure, paralysis, loss of bowel/bladder control, priapism"],
+["Injury level and breathing","Cord injury at or above C3–C5 affects the diaphragm and causes respiratory arrest"],
+["Indications for SMR","Spinal pain or tenderness, neuro deficit, altered mental status, intoxication, distracting injury, high-risk MOI"],
+["Helmet removal","Leave on if it fits well and airway is clear; remove if it blocks airway care or fits loosely"],
+["Hemothorax","Blood in the pleural space; dull percussion, shock signs, decreased breath sounds"],
+["Pulmonary contusion","Bruised lung; hypoxia and dyspnea, can worsen over hours"],
+["Myocardial contusion","Bruised heart from blunt chest trauma; chest pain, dysrhythmias"],
+["Traumatic asphyxia","Severe chest crush; purple face and neck, JVD, distended neck veins"],
+["Aortic injury clue","Rapid deceleration, chest or back pain, unequal arm blood pressures"],
+["Lower rib fractures and organs","Left lower ribs: spleen. Right lower ribs: liver"],
+["Solid vs hollow organs","Solid (liver, spleen, kidney) bleed. Hollow (stomach, bowel) leak and cause peritonitis"],
+["Peritonitis signs","Rigid, guarded, tender abdomen, pain with movement, fever later"],
+["Cullen’s vs Grey Turner","Cullen’s: bruising around the umbilicus. Grey Turner: bruising at the flank. Both suggest internal bleeding"],
+["Pelvic fracture care","Don’t rock or repeatedly compress; apply pelvic binder or sheet; treat for shock"],
+["PMS check","Pulse, motor, sensation; check before and after splinting"],
+["Splinting rule","Immobilize the joints above and below a bone injury, and the bones above and below a joint injury"],
+["Sprain, strain, dislocation","Sprain: ligament. Strain: muscle or tendon. Dislocation: joint ends displaced"],
+["Hip fracture vs posterior dislocation","Fracture: leg shortened, externally rotated. Posterior dislocation: shortened, internally rotated"],
+["Open vs closed fracture","Open: bone or wound breaks the skin. Closed: skin intact"],
+["Chemical burn care","Brush off dry powder, then flush with large amounts of water"],
+["Electrical burn care","Turn off power first; look for entrance and exit wounds; expect dysrhythmias"],
+["Inhalation injury signs","Soot in mouth, singed nasal hair, hoarseness, stridor, facial burns"],
+["Hemostatic gauze use","Pack the wound and hold firm direct pressure at least 3 minutes"],
+["Open neck wound","Cover with occlusive dressing to prevent air embolism, plus direct pressure around it"],
+["Laryngeal injury signs","Hoarseness, voice change, neck crepitus, pain with swallowing"],
+["Eye chemical injury","Flush with water continuously; transport while flushing"],
+["Impaled object in eye","Stabilize in place; shield with a cup; cover both eyes if no movement"],
+["Avulsed tooth","Hold by the crown, keep in milk or saline, transport with patient"],
+["Heat stroke vs exhaustion","Stroke: altered mental status, hot skin; cool rapidly. Exhaustion: sweating, weakness, cool"],
+["Hypothermia handling","Handle gently, remove wet clothes, insulate; rough movement can cause V-fib"],
+["Frostbite care","Don’t rub; protect and dress; don’t rewarm if refreezing may occur"],
+["Air embolism vs decompression sickness","Embolism: rapid ascent with breath held, immediate symptoms. DCS: nitrogen bubbles, hours later, joint pain"],
+["Snakebite care","Keep the limb still and at heart level, remove rings; no ice, tourniquet, cutting or suction"],
+["Drowning priority","Airway and ventilations first; suspect spine injury only with diving or trauma"],
+["Scene time goal","Critical trauma: about 10 minutes or less on scene"],
+["Trauma center levels","Level I highest (full resources, research); Level IV stabilizes and transfers"],
+["Field triage red criteria","Send to highest-level trauma center: penetrating torso, flail chest, pelvic fracture, tourniquet need, ejection"],
+["Index of suspicion","Your level of concern for hidden injury based on mechanism and findings"],
+["Barriers to CPR","Soft surface, clothing, blocked airway, impaled object, rescuer safety, DNR or obvious death"],
+["Motorcycle impact types","Head-on, angular, ejection, controlled (laying the bike down)"],
+["Adult pedestrian struck (Waddell’s triad)","Lower extremity or femur, torso or pelvis, and head injuries"],
+["Down-and-under pattern","Unrestrained occupant slides under dash: knee, femur, hip dislocation, pelvic injury"],
+["Up-and-over pattern","Occupant strikes the steering wheel or windshield: head, neck, chest, abdominal injury"],
+["Lap belt worn too high","Abdominal organ injury and lumbar spine fractures"],
+["Airbag injuries","Facial abrasions, chemical irritation of eyes and skin; not a substitute for seat belt"],
+["Arterial bleeding","Bright red, spurting; hardest to control"],
+["Venous bleeding","Dark red, steady flow; can be heavy"],
+["Capillary bleeding","Oozing, often clots on its own"],
+["Normal adult blood volume","About 5–6 L (≈70 mL/kg); an infant has only about 300 mL"],
+["Pulse pressure","Systolic minus diastolic; narrows in shock"],
+["Soaked pressure dressing","Add more dressings on top; don’t remove the first"],
+["Tourniquet not working","Tighten more or add a second tourniquet just above the first"],
+["Skin layers","Epidermis (outer), dermis (vessels, nerves, glands), subcutaneous tissue"],
+["Dressing vs bandage","Dressing covers the wound; bandage holds the dressing in place"],
+["Closed wound types","Contusion, hematoma, crush injury"],
+["Full vs partial thickness pain","Full thickness may be painless (nerves destroyed); partial thickness is very painful with blisters"],
+["CO poisoning","SpO₂ reads falsely normal; give high-flow oxygen"],
+["Facial trauma airway risks","Blood, teeth, swelling and tongue can block the airway; suction and position to drain"],
+["Hyphema","Blood in the anterior chamber of the eye in front of the iris"],
+["Orbital blowout fracture","Can’t look up, double vision, sunken eye"],
+["Ear canal bleeding","Cover loosely; don’t pack or stop the flow"],
+["Kidney injury signs","Flank pain, bruising, blood in urine"],
+["Bladder injury signs","Lower abdominal pain, blood at the urethral opening, unable to void; often with pelvic fracture"],
+["Genital avulsion care","Cover with moist sterile dressing; keep avulsed part cool and bring it along"],
+["Pregnant trauma patient","Late pregnancy: tilt to the left 15–30° or displace uterus to avoid supine hypotension"],
+["Open fracture care","Control bleeding, cover with moist sterile dressing, splint; don’t push bone ends back"],
+["Pelvic binder position","Centered over the greater trochanters"],
+["Greenstick fracture","Incomplete fracture common in children"],
+["Geriatric trauma risks","Fractures from low falls, blood thinners raise bleeding risk, poor tolerance of shock"],
+["Hypothermia stages","Mild: shivering. Moderate: shivering stops, confusion. Severe: unresponsive, slow pulse"],
+["Frostnip vs frostbite","Frostnip: superficial, reversible. Frostbite: deep, tissue damage"],
+["Heat cramps care","Rest in a cool place, oral fluids"],
+["Altitude illness types","AMS: headache, nausea. HAPE: cough, dyspnea. HACE: ataxia, confusion. Treat by descending"],
+["Lightning strike triage","Treat arrest victims first (reverse triage); cardiac arrest is common"],
+["Black widow bite","Muscle cramps and abdominal rigidity"],
+["Brown recluse bite","Local pain, then tissue necrosis"],
+["Bee sting care","Scrape out stinger; watch for anaphylaxis"]
+];
+var Q=[
+["A head-injured patient has BP 190/90, pulse 52 and irregular breathing. This is:",["Neurogenic shock","Cushing’s reflex","Septic shock","Heat stroke"],1,"Rising ICP produces hypertension, bradycardia and irregular respirations."],
+["Clear and equal breath sounds, JVD and muffled heart tones suggest:",["Tension pneumothorax","Hemothorax","Cardiac tamponade","Flail chest"],2,"Beck’s triad with equal breath sounds points to tamponade."],
+["Tracheal deviation, absent left breath sounds and JVD suggest:",["Tamponade","Tension pneumothorax","Asthma","Commotio cordis"],1,"Unilateral absent breath sounds with JVD and hypotension signal tension pneumothorax."],
+["Eyes open to voice, confused speech, localizes pain. GCS is:",["10","11","12","13"],2,"Eyes 3 + verbal 4 + motor 5 = 12."],
+["Anterior trunk of an adult is what percent BSA?",["9","18","27","36"],1,"Front trunk 18%, back 18%."],
+["Left shoulder pain after blunt abdominal trauma most suggests:",["Fractured clavicle","Splenic injury (Kehr’s sign)","Appendicitis","Pneumothorax"],1,"Blood irritating the diaphragm refers pain to the left shoulder."],
+["A baseball strikes a child’s chest and he collapses pulseless. Next step?",["Splint","Start CPR and use an AED","Wait for ALS","Oxygen only"],1,"Commotio cordis causes V-fib and requires immediate CPR and defibrillation."],
+["An object impaled in the thigh. You should:",["Remove it","Stabilize it in place","Push it deeper","Cut it flush and remove"],1,"Leave it unless it blocks the airway or CPR."],
+["Best care for an amputated finger:",["Submerge in ice water","Wrap in moist sterile gauze, bag, keep cool","Place on dry gauze only","Discard"],1,"Moist wrap, sealed bag, kept cool without direct ice contact."],
+["A sucking chest wound is covered with:",["Fully sealed dressing","Occlusive dressing taped on three sides","Gauze only","Pressure bandage"],1,"A three-sided or vented seal lets air escape and prevents tension."],
+["Warm, dry skin with bradycardia and low BP after a fall:",["Hemorrhagic shock","Neurogenic shock","Anaphylaxis","Cardiogenic shock"],1,"Loss of sympathetic tone gives vasodilation without tachycardia."],
+["Which is a clear indication for a tourniquet?",["Minor abrasion","Life-threatening limb bleeding not controlled by direct pressure","Nosebleed","Sprain"],1,"Tourniquets are for severe extremity hemorrhage when pressure fails."],
+["Eviscerated bowel should be:",["Pushed back in","Covered with moist sterile dressing and an occlusive cover","Left uncovered","Cleaned with betadine"],1,"Don’t replace organs; keep moist and covered."],
+["Arterial brain bleed with lucid interval:",["Subdural","Epidural","Concussion","Contusion"],1,"Classic epidural hematoma presentation."],
+["Crackling under the skin of the neck and chest is:",["Crepitus of bone","Subcutaneous emphysema","Ecchymosis","Hematoma"],1,"Air in tissue gives a crackling feel."],
+["Best airway maneuver in suspected spine injury:",["Head-tilt/chin-lift","Jaw thrust","Finger sweep","Neck extension"],1,"Jaw thrust avoids moving the cervical spine."],
+["Which fall height is a significant MOI for an adult?",["5 ft","10 ft","More than 20 ft","None"],2,"More than 20 ft (or 3× child height) raises suspicion."],
+["A traction splint is contraindicated with:",["Midshaft femur fracture","Hip or pelvic injury","Closed thigh fracture","Mild pain"],1,"Avoid with pelvic, hip, knee or lower-leg injury."],
+["Pain, pallor, paresthesia, paralysis and pressure describe:",["Compartment syndrome","Heat stroke","Shock","Flail chest"],0,"Swelling in a confined space cuts off circulation (6 Ps)."],
+["Per the 2025 AHA update, a conscious choking adult receives:",["Only abdominal thrusts","Alternating 5 back blows and 5 abdominal thrusts","Only chest compressions","Finger sweeps"],1,"The 2025 guidelines now include back blows alternating with thrusts."],
+["Under 2021 field triage, a patient needing a tourniquet is:",["Yellow","Red: highest-level trauma center","Green","Treat locally"],1,"Active bleeding requiring a tourniquet is a red criterion."],
+["Regarding long backboards in current SMR guidance:",["Required for every trauma patient","A tool for extrication/movement, not required for SMR","Always avoid","Must be used for penetrating trauma"],1,"Collar plus stretcher achieves SMR; boards don’t truly immobilize."],
+["Systolic BP <90 and absent radial pulse indicates:",["Compensated shock","Decompensated shock","Normal","Anxiety"],1,"Hypotension is a late sign of shock."],
+["Epistaxis first aid:",["Tilt head back","Pinch nose and lean forward","Pack deep","Lie flat"],1,"Leaning forward prevents swallowing blood."],
+["After a fall, a patient has raccoon eyes and clear fluid from the ear. This suggests:",["Epidural hematoma","Basilar skull fracture","Concussion","Cervical sprain"],1,"Periorbital bruising and CSF leakage indicate basilar skull fracture."],
+["A head-injured patient has a blown right pupil, posturing and falling GCS. Most likely:",["Concussion","Brain herniation","Hypoglycemia","Syncope"],1,"These are signs of herniation from rising ICP."],
+["Sudden worst-ever headache with stiff neck suggests:",["Subarachnoid hemorrhage","Contusion","Epidural hematoma","Tension headache"],0,"Thunderclap headache plus neck stiffness is classic for subarachnoid bleeding."],
+["A diver is quadriplegic with shallow abdominal breathing. The injury is most likely at the:",["Lumbar level","Thoracic level below T6","Cervical level","Sacral level"],2,"High cervical injury impairs the diaphragm and intercostals."],
+["A football player with a well-fitting helmet has a clear airway. You should:",["Remove it immediately","Leave it on and stabilize","Cut it off","Remove only the chin strap"],1,"Leave the helmet if it fits and the airway is not compromised; remove it if it interferes."],
+["After a chest crush, a patient has a purple face, neck and JVD. This is:",["Traumatic asphyxia","Tension pneumothorax","Flail chest","Epistaxis"],0,"Sudden chest compression causes backflow and facial congestion."],
+["A patient has paradoxical movement of the right chest. Best care:",["Wrap the chest tightly","Stabilize with a bulky dressing and assist ventilation if inadequate","Sandbag the chest","Observe only"],1,"Support the flail segment and provide oxygen or ventilation as needed."],
+["Left lower rib fractures, left upper quadrant pain and hypotension suggest injury to the:",["Liver","Spleen","Appendix","Bladder"],1,"The spleen lies beneath the left lower ribs."],
+["Bruising around the umbilicus after blunt trauma (Cullen’s sign) suggests:",["Intra-abdominal bleeding","Appendicitis","Hernia","Fractured rib"],0,"It indicates blood in the abdomen or retroperitoneum."],
+["A rigid abdomen after a stab wound most likely indicates:",["Gas","Peritonitis from hollow organ injury","Hernia","Muscle strain"],1,"Leaked bowel contents inflame the peritoneum."],
+["A patient with an unstable pelvis and hypotension needs:",["Repeated pelvic rocking","Pelvic binder and rapid transport","Sitting position","Traction splint"],1,"Bind the pelvis and treat shock; avoid repeated manipulation."],
+["An elderly patient has a shortened, externally rotated leg after a fall. Likely:",["Posterior hip dislocation","Hip fracture","Femoral shaft fracture","Knee dislocation"],1,"Shortened and externally rotated is the classic hip fracture presentation."],
+["To splint a midshaft forearm fracture, immobilize:",["Only the fracture","The wrist and elbow","The shoulder only","The hand only"],1,"Include the joints above and below the injury."],
+["A patient with an angulated fracture has no distal pulse. You should:",["Splint as found regardless","Gently realign per protocol, then splint and recheck pulse","Massage the limb","Wait for ALS"],1,"Restoring pulse takes priority; follow local protocol."],
+["Dry chemical powder is on a patient’s arm. First:",["Flush without brushing","Brush off the powder, then flush with water","Neutralize with vinegar","Cover with a dry dressing"],1,"Remove dry chemical before flushing so it doesn’t activate on skin."],
+["A patient touched a live wire. Your first step:",["Start CPR","Make sure the power is off and the scene is safe","Cover the burn","Move the patient"],1,"Scene safety comes first."],
+["An adult has burns to the entire left leg and left arm. BSA is about:",["18%","27%","36%","45%"],1,"Leg 18 + arm 9 = 27%."],
+["A child has burns to the whole head and front of the trunk. Approximate BSA:",["27%","36%","45%","18%"],1,"Child head 18 + front trunk 18 = 36%."],
+["A patient with hot, dry skin and confusion after exertion needs:",["Rapid cooling and transport","Oral fluids only","Salt tablets","Observation"],0,"Heat stroke is life-threatening; cool actively."],
+["A hypothermic patient should be:",["Rubbed vigorously","Handled gently with wet clothes removed","Given alcohol","Placed in a hot bath"],1,"Rough handling can trigger ventricular fibrillation."],
+["A diver surfaces rapidly holding their breath and becomes unresponsive. Suspect:",["Air embolism","Hypoglycemia","Drowning","Carbon monoxide"],0,"Rapid ascent causes pulmonary barotrauma and arterial gas embolism."],
+["Appropriate snakebite care includes:",["Immobilizing the limb at heart level and removing rings","Applying ice","Cutting the bite","A tight tourniquet"],0,"Limit movement and swelling; avoid ice, cutting and tourniquets."],
+["A large open neck wound is covered with:",["Occlusive dressing","Loose gauze","Nothing","Circumferential neck wrap"],0,"Occlusion prevents air embolism; avoid compressing the airway."],
+["After a chemical splash to the eye, you should:",["Patch both eyes","Flush continuously with water","Neutralize","Cover and wait"],1,"Dilution is the priority and should continue during transport."],
+["An avulsed tooth should be transported in:",["Dry gauze","Milk or saline","Tap water","Ice directly"],1,"Keep the root moist; milk or saline preserves the cells."],
+["An ejected occupant has normal vital signs and GCS 15. Under field triage this is:",["Green","Red mechanism; highest-level trauma center","No concern","Refusal"],1,"Ejection is a high-risk mechanism."],
+["The on-scene goal for a critical trauma patient is about:",["5 minutes","10 minutes","20 minutes","30 minutes"],1,"Minimize scene time (platinum 10 minutes)."],
+["A patient with a sealed chest dressing worsens with tension signs. You should:",["Add more tape","Lift a corner of the dressing to release air","Remove all dressings","Start CPR"],1,"Burping the seal can relieve pressure."],
+["Hemostatic gauze should be packed into the wound and held with pressure for at least:",["30 seconds","3 minutes","30 minutes","Not required"],1,"Pressure must be maintained to activate clotting."],
+["An alert, sober patient with minor MOI, no spinal pain and no deficits:",["Always needs a board","May not need SMR under selective protocols","Needs a short board","Needs a cervical collar only"],1,"Selective SMR allows omission when criteria are clear; follow your course and local protocol."],
+["Which most directly interferes with CPR quality?",["A soft mattress","A firm floor","Oxygen","An AED"],0,"Compressions need a firm surface."],
+["An unrestrained driver slid forward under the dash. Expect injury to the:",["Femur and hips","Skull only","Ankles only","Hands only"],0,"Down-and-under: knees strike the dash, causing femur and hip injuries."],
+["An adult pedestrian is struck by a car. Expected injuries include:",["Legs, torso or pelvis, and head","Hands only","Feet only","None"],0,"This is Waddell’s triad."],
+["A lap belt worn too high risks injury to:",["Abdominal organs and lumbar spine","Ankles","Scalp","Wrist"],0,"A high lap belt compresses the abdomen."],
+["Dark red blood flowing steadily from a wound is:",["Arterial","Venous","Capillary","Clotted"],1,"Venous blood is dark and steady."],
+["Bright red blood spurting from a wound is:",["Venous","Capillary","Arterial","Normal"],2,"Arterial bleeding spurts with the pulse."],
+["A pressure dressing is soaked through. You should:",["Remove it","Add more dressings on top","Start over","Loosen it"],1,"Don’t disturb clots; reinforce the dressing."],
+["Which BP shows narrowing pulse pressure from shock?",["120/80","100/90","150/70","180/100"],1,"Pulse pressure of 10 is narrow."],
+["Blood visible in front of the iris after a blow to the eye is:",["Hyphema","Cataract","Retinal tear","Pterygium"],0,"Hyphema is blood in the anterior chamber."],
+["After a blow to the eye, a patient can’t look upward and sees double. Suspect:",["Orbital blowout fracture","Stroke","Migraine","Concussion"],0,"Entrapped eye muscles limit movement."],
+["Blood from the ear after head trauma: you should",["Pack the canal","Cover loosely and let it drain","Irrigate","Apply direct pressure"],1,"Blocking drainage can raise intracranial pressure."],
+["Facial trauma with blood in the mouth: first",["Suction and position to drain","Give fluids","Remove teeth","Wait"],0,"Keep the airway clear."],
+["A 32-week pregnant patient is hypotensive supine. You should:",["Tilt her to the left","Sit her up","Lay her on her right","Prone"],0,"Left tilt relieves vena cava compression."],
+["Flank pain and blood in the urine after a fall suggest:",["Kidney injury","Appendicitis","Rib sprain","Hernia"],0,"The kidneys lie in the flanks."],
+["A straddle injury with blood at the urethral opening suggests:",["Bladder or urethral injury","Hernia","Gastritis","Muscle strain"],0,"Pelvic trauma can injure the urinary tract."],
+["Treat a genital avulsion with:",["Moist sterile dressing and cooling of the part","Direct heat","Ice directly","Leaving it open"],0,"Protect the tissue and bring the part."],
+["Bone ends protrude from an open fracture. You should:",["Push them back","Cover with moist sterile dressing and splint","Ignore","Rub"],1,"Do not push exposed bone back in."],
+["Whitened numb skin that returns to normal with warming is:",["Frostnip","Frostbite","Burn","Contusion"],0,"Frostnip is superficial and reversible."],
+["A climber has a cough, dyspnea and pink frothy sputum at altitude. Best step:",["Descend","Ascend","Rest and wait","Fluids only"],0,"HAPE needs descent and oxygen."],
+["A climber is ataxic and confused at altitude. Suspect:",["HACE","Heat cramps","Hypoglycemia","Anemia"],0,"High-altitude cerebral edema."],
+["Several lightning victims: treat first those who are:",["Moaning","In cardiac arrest","Walking","Burned"],1,"Reverse triage favors arrest patients."],
+["Muscle cramps and a rigid abdomen after a spider bite suggest:",["Black widow","Brown recluse","Honeybee","Tick"],0,"Black widow venom is neurotoxic."],
+["Bee sting care includes:",["Scraping off the stinger and monitoring for anaphylaxis","Squeezing","Tourniquet","Ice only"],0,"Scrape, don’t squeeze."],
+["Heat cramps are treated with:",["Rest in a cool area and fluids","IV only","Cold water immersion","Salt pills"],0,"Mild heat illness needs cooling and hydration."],
+["Shivering stops and a patient becomes confused. Hypothermia is:",["Mild","Moderate","Absent","Frostbite"],1,"Loss of shivering signals moderate hypothermia."],
+["An elderly patient on blood thinners struck her head. Concern is:",["Intracranial bleeding","None","Hunger","Sprain"],0,"Anticoagulants raise bleeding risk."],
+["Which patient is most endangered by 500 mL of blood loss?",["Adult","Infant","Teen","Athlete"],1,"An infant’s total volume is small."],
+["A tourniquet is on but bleeding continues. You should:",["Add a second tourniquet above it","Loosen it","Remove it","Elevate only"],0,"Tighten or place a second, proximal tourniquet."],
+["An object in the cheek is bleeding into the mouth and blocking the airway. You should:",["Leave it regardless","Remove it, if needed to protect the airway","Push it","Cover only"],1,"Remove an impaled object if it compromises the airway."],
+["After release of a limb trapped for hours, a major concern is:",["Hyperkalemia and renal failure","Hunger","Sprain","Fever"],0,"Crush syndrome releases toxins and potassium."],
+["Blunt chest trauma with chest pain and irregular pulse suggests:",["Myocardial contusion","Appendicitis","Frostbite","Sciatica"],0,"Cardiac bruising causes dysrhythmias."],
+["Which burn depth may be painless?",["Superficial","Partial thickness","Full thickness","None"],2,"Nerve endings are destroyed."],
+["With carbon monoxide exposure, SpO₂ may be:",["Falsely normal","Always low","Zero","Unaffected"],0,"Pulse oximeters can’t distinguish carboxyhemoglobin."]
+];
+var $=function(i){return document.getElementById(i)};
+var tabs=[["ref","Reference"],["cards","Flashcards"],["quiz","Quiz"],["new","What’s new"]];
+tabs.forEach(function(t,i){var b=document.createElement("button");b.textContent=t[1];b.setAttribute("role","tab");b.setAttribute("aria-selected",i==0);b.onclick=function(){show(t[0])};b.dataset.t=t[0];$("tabs").appendChild(b)});
+function show(id){tabs.forEach(function(t){$(t[0]).hidden=t[0]!=id});[].forEach.call($("tabs").children,function(b){b.setAttribute("aria-selected",b.dataset.t==id)});window.scrollTo(0,0)}
+$("ref").innerHTML=REF.map(function(r){return"<details><summary>"+r[0]+"</summary><div>"+r[1]+"</div></details>"}).join("")+'<p class="meta">Highlighted text marks high-yield exam points.</p>';
+var deck=FC.slice(),ci=0,flipped=false;
+function drawCard(){var c=deck[ci];$("cards").innerHTML='<div class="card fc'+(flipped?" back":"")+'" tabindex="0" role="button" id="fc">'+(flipped?c[1]:c[0])+'</div><div class="row"><button class="btn" id="pv">Previous</button><span class="meta">'+(ci+1)+' / '+deck.length+(flipped?" · answer":" · tap to flip")+'</span><button class="btn p" id="nx">Next</button></div><div class="row"><button class="btn" id="sh">Shuffle</button></div>';
+$("fc").onclick=function(){flipped=!flipped;drawCard()};$("fc").onkeydown=function(e){if(e.key=="Enter"||e.key==" "){e.preventDefault();flipped=!flipped;drawCard()}};
+$("nx").onclick=function(){ci=(ci+1)%deck.length;flipped=false;drawCard()};$("pv").onclick=function(){ci=(ci-1+deck.length)%deck.length;flipped=false;drawCard()};
+$("sh").onclick=function(){deck.sort(function(){return Math.random()-.5});ci=0;flipped=false;drawCard()}}
+drawCard();
+var qs,qi,sc,ans;
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var QN=25;
+var BANK=Q.length+FC.length*4;
+function gen(c,ty){var oth=FC.filter(function(x){return x!==c});
+function ds(k){return shuf(oth.filter(function(x){return x[k]!==c[k]}).sort(function(a,b){return Math.abs(a[k].length-c[k].length)-Math.abs(b[k].length-c[k].length)}).slice(0,12)).slice(0,3).map(function(x){return x[k]})}
+var ex=c[0]+": "+c[1];
+if(ty=="f")return["Which best matches <b>"+c[0]+"</b>?",[c[1]].concat(ds(1)),0,ex];
+if(ty=="r")return["Which topic is described by: <b>"+c[1]+"</b>?",[c[0]].concat(ds(0)),0,ex];
+var tr=ty=="t",s=tr?c[1]:ds(1)[0];
+return["True or false: “<b>"+c[0]+"</b>” means: "+s,["True","False"],tr?0:1,tr?ex:"False. "+ex,1]}
+function startQuiz(){var h=shuf(Q).slice(0,10),pool=[],used=[],g=[];FC.forEach(function(c){["f","r","t","x"].forEach(function(t){pool.push([c,t])})});shuf(pool).forEach(function(p){if(g.length<QN-h.length&&used.indexOf(p[0])<0){used.push(p[0]);g.push(gen(p[0],p[1]))}});
+qs=shuf(h.concat(g)).map(function(q){if(q[4])return q;var o=shuf(q[1].map(function(t,i){return[t,i==q[2]]}));return[q[0],o.map(function(x){return x[0]}),o.findIndex(function(x){return x[1]}),q[3]]});qi=0;sc=0;ans=false;drawQ()}
+function drawQ(){if(qi>=qs.length){$("quiz").innerHTML='<div class="card"><h2>Score: '+sc+' / '+qs.length+'</h2><p>'+(sc/qs.length>=.8?"Strong work. Review the missed topics once more.":"Revisit the Reference tab and flashcards, then retry.")+'</p><button class="btn p" id="rs">New random quiz</button></div>';$("rs").onclick=startQuiz;return}
+var q=qs[qi];$("quiz").innerHTML='<div class="card"><p class="meta">Question '+(qi+1)+' of '+qs.length+' · score '+sc+' · drawn from a bank of '+BANK+'</p><p><b>'+q[0]+'</b></p>'+q[1].map(function(o,i){return'<button class="opt" data-i="'+i+'">'+o+'</button>'}).join("")+'<div id="ex"></div></div>';
+ans=false;[].forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){if(ans)return;ans=true;var i=+b.dataset.i;if(i==q[2])sc++;b.classList.add(i==q[2]?"good":"bad");document.querySelectorAll(".opt")[q[2]].classList.add("good");$("ex").innerHTML='<div class="exp">'+q[3]+'</div><div class="row"><span></span><button class="btn p" id="nq">'+(qi+1<qs.length?"Next":"See score")+'</button></div>';$("nq").onclick=function(){qi++;drawQ()}}})}
+startQuiz();
+$("new").innerHTML=`<div class="card"><h2 style="margin-top:0">Recent changes to know</h2><ul>
+<li><b>2025 AHA/ILCOR CPR and ECC guidelines:</b> few big changes, but they stress early recognition and early defibrillation, minimizing interruptions (pauses under 10 seconds for pediatric arrest), and controlled, effective bag-mask ventilation. Routine mechanical CPR devices are not recommended for adult arrest.</li>
+<li><b>Choking:</b> for responsive adults and children, alternate 5 back blows with 5 abdominal thrusts until clear or the person becomes unresponsive, then begin CPR. Infants: back blows and chest thrusts (no abdominal thrusts).</li>
+<li><b>Opioid overdose:</b> a formal algorithm now covers naloxone plus CPR.</li>
+<li><b>2024 AHA/Red Cross first aid:</b> for life-threatening bleeding, apply direct pressure, then a tourniquet or wound packing if the wound location allows.</li>
+<li><b>2021 National Field Triage Guideline:</b> <mark>Red</mark> criteria (e.g., penetrating head/neck/torso/proximal limb, flail chest, suspected pelvic fracture, two or more proximal long-bone fractures, amputation proximal to wrist or ankle, bleeding needing a tourniquet or packing, plus abnormal mental status or vital signs) go to the highest-level trauma center. <mark>Yellow</mark> criteria go to a trauma center, not necessarily the highest level.</li>
+<li><b>Spinal motion restriction:</b> modern EMS guidelines use selective SMR (collar and stretcher) rather than automatic long-board immobilization, and penetrating neck or torso trauma alone is not an SMR indication. Your textbook’s “immobilization” language reflects the older approach.</li></ul>
+<div class="note">Local protocols and your medical director always override this tool. Use it to study, not as a clinical reference. Check your state’s adoption date for the 2025 AHA guidelines, since agencies roll out updates on different schedules.</div></div>`;
+</script>
+</body>
+</html>
