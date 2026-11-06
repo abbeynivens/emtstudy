@@ -1,0 +1,962 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EMT Trauma Study Tool</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7f9;--card:#fff;--ink:#14202e;--mute:#566475;--line:#d5dbe3;--brand:#0b5cab;--alert:#c8391a;--ok:#1b7a43;--okbg:#e2f3e8;--badbg:#fbe5df;--hi:#fff2c2;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1620;--card:#18222e;--ink:#e8eef5;--mute:#9aa9ba;--line:#2c3a4a;--brand:#6db0f2;--alert:#ff8466;--ok:#6fd49a;--okbg:#14301f;--badbg:#3a1d16;--hi:#4a3f12;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:20px 16px 8px;max-width:820px;margin:auto}
+h1{font:700 1.7rem/1.2 Georgia,"Times New Roman",serif;margin:0 0 4px}
+.sub{color:var(--mute);margin:0;font-size:.92rem}
+nav{display:flex;gap:6px;max-width:820px;margin:12px auto 0;padding:0 16px;overflow-x:auto}
+nav button{flex:1 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 14px;border-radius:8px;font:600 .95rem inherit;cursor:pointer}
+nav button[aria-selected=true]{background:var(--brand);border-color:var(--brand);color:#fff}
+@media (prefers-color-scheme:dark){nav button[aria-selected=true]{color:#06121f}}
+main{max-width:820px;margin:16px auto 40px;padding:0 16px}
+section[hidden]{display:none}
+details{background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:8px}
+summary{padding:12px 14px;font-weight:700;cursor:pointer}
+details>div{padding:0 14px 12px;overflow-x:auto}
+details ul{margin:6px 0;padding-left:20px}
+li{margin:3px 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:6px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--bg)}
+mark{background:var(--hi);color:inherit;padding:0 3px;border-radius:3px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.fc{min-height:190px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.15rem;cursor:pointer;user-select:none}
+.fc.back{border-color:var(--brand);background:var(--okbg)}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:8px;font:600 .92rem inherit;cursor:pointer}
+.btn.p{background:var(--brand);border-color:var(--brand);color:#fff}
+@media (prefers-color-scheme:dark){.btn.p{color:#06121f}}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:11px 13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font:inherit;cursor:pointer}
+.opt.good{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--alert)}
+.exp{margin-top:10px;padding:10px 12px;border-left:4px solid var(--brand);background:var(--bg)}
+.meta{color:var(--mute);font-size:.88rem}
+button:focus-visible,summary:focus-visible,.fc:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.pk{min-width:44px}
+.note{background:var(--hi);border-radius:8px;padding:10px 12px;font-size:.92rem;margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+<h1>EMT medical study tool</h1>
+<p class="sub">Built from Emergency Care and Transportation of the Sick and Injured (11th ed.) Ch. 11 and 14–22, the matching slides, the eight Section 6 workbooks (medical overview, pharmacology, neurologic, GI and urologic, endocrine and hematologic, immunologic, toxicology, psychiatric) and the Fisdap medical guide (Spring 2024).</p>
+</header>
+<nav role="tablist" id="tabs"></nav>
+<main>
+<section id="ref"></section>
+<section id="cards" hidden></section>
+<section id="quiz" hidden></section>
+<section id="bank" hidden></section>
+<section id="new" hidden></section>
+</main>
+<script>
+var REF=[
+["Assessment, AMS and infection control",`<ul><li><b>AEIOU TIPS</b> for altered mental status: Alcohol; Epilepsy, Endocrine, Electrolytes; Insulin; Opiates; Uremia; Trauma, Temperature; Infection; Poisoning, Psychogenic; Shock, Stroke, Seizure, Syncope, Space-occupying lesion, Subarachnoid hemorrhage. <mark>ABCs first, then treat the cause.</mark></li>
+<li><b>Hypoxia:</b> anxiety, SpO₂ &lt;94%, pallor to cyanosis, dyspnea or tachypnea, tachycardia; bradycardia is a late sign.</li>
+<li><b>Meningitis:</b> contact precautions (gloves, gown) plus airborne precautions (mask, goggles).</li>
+<li><b>Influenza:</b> cough, fever, sore throat, fatigue and body aches, headache.</li>
+<li><b>Check blood glucose</b> with altered mental status, stroke signs, a diabetes history, signs of hyper- or hypoglycemia, or seizure.</li>
+<li><b>Dehydration:</b> tachycardia, poor skin turgor, dry mucous membranes, sunken eyes (sunken fontanelle in infants), normal to low BP, delayed refill, low urine output, no tears. Mild: ABCs, remove from the environment, oral fluids per protocol.</li></ul>`],
+["Pharmacology and epinephrine",`<ul><li><b>Epinephrine</b> stimulates alpha and beta receptors. Alpha 1: vasoconstriction. Beta 1: more cardiac output. Beta 2: bronchodilation.</li>
+<li>Anaphylaxis: epinephrine IM right away (auto-injector or 0.3 mg IM per protocol).</li>
+<li>EMT-level medications (per local protocol): oxygen, oral glucose, aspirin (chewed), nitroglycerin, albuterol, epinephrine auto-injector, naloxone.</li>
+<li><b>Nitroglycerin:</b> avoid with low blood pressure or recent erectile-dysfunction medication. Check your protocol for the exact cutoffs.</li>
+<li><b>Aspirin</b> for suspected ACS unless allergic or told not to take it. Chew, don’t swallow whole.</li></ul>`],
+["Respiratory emergencies",`<table><tr><th>Condition</th><th>Clues</th><th>Care</th></tr>
+<tr><td>Asthma</td><td>Wheezing, prolonged exhalation, accessory muscles</td><td>Oxygen, albuterol per protocol</td></tr>
+<tr><td>COPD (emphysema, chronic bronchitis)</td><td>Chronic cough, barrel chest, pursed-lip breathing</td><td>Oxygen to correct hypoxia, assist ventilation, don’t withhold O₂</td></tr>
+<tr><td>CHF / pulmonary edema</td><td>Crackles, orthopnea, edema, JVD</td><td>Sit upright, oxygen, CPAP per protocol</td></tr>
+<tr><td>Pulmonary embolism</td><td>Sudden dyspnea, pleuritic pain, recent immobility</td><td>Oxygen, rapid transport</td></tr>
+<tr><td>Croup / epiglottitis</td><td>Croup: barking cough. Epiglottitis: drooling, tripod, toxic look</td><td>Keep calm, no throat exam, oxygen, transport</td></tr></table>`],
+["Cardiovascular emergencies",`<ul><li><b>ACS:</b> chest pressure, may radiate to arm, jaw or back, with diaphoresis, nausea, dyspnea. Women, older adults and diabetics may present atypically.</li>
+<li>Angina eases with rest or nitroglycerin; an MI usually lasts longer and isn’t relieved.</li>
+<li>Care: oxygen if SpO₂ &lt;94%, aspirin, nitroglycerin per protocol, AED ready, rapid transport.</li>
+<li>Left-sided CHF: pulmonary edema. Right-sided CHF: JVD and peripheral edema. Cardiogenic shock: pump failure.</li>
+<li>Aortic dissection or aneurysm: tearing chest or back pain, unequal arm pressures.</li>
+<li><b>2025 AHA:</b> compressions at 100–120/min, minimal interruptions; routine mechanical CPR devices are not recommended for adults; one unified chain of survival.</li></ul>`],
+["Neurologic emergencies",`<ul><li><b>Stroke (Cincinnati scale):</b> Face droop, Arm drift, Speech. Establish last-known-well time, check glucose, go to a stroke center, assess AEIOU TIPS.</li>
+<li><b>Seizure phases:</b> aura (not in everyone), tonic (stiffening), clonic (shaking), postictal (resetting).</li>
+<li>Seizing patient: clear the area, protect the head, remove tangling items, have suction ready, recovery position when it stops, check glucose, consider spinal precautions and ALS.</li>
+<li>Migraine: pounding or throbbing pain, nausea and vomiting, visual aura. Care: ABCs, quiet dark environment, consider no lights and siren, rule out serious causes.</li></ul>`],
+["GI, kidney, diabetes and blood",`<ul><li><b>GI hemorrhage:</b> hematemesis (bloody vomit), coffee-ground vomit, melena (tarry black stool), hematochezia (bright red blood per rectum). Treat for shock.</li>
+<li><b>Dialysis problems:</b> dehydration, electrolyte imbalance (seizure, respiratory depression, dysrhythmia), hypotension, cramps, nausea, bleeding or infection at the access site.</li>
+<li><b>Insulin</b> comes from pancreatic beta cells and moves glucose into cells; glucagon from alpha cells releases stored sugar. Type 1: little or no insulin. Type 2: insulin resistance.</li></ul>
+<table><tr><th></th><th>Hypoglycemia</th><th>DKA (hyperglycemia)</th></tr>
+<tr><td>Onset</td><td>Rapid</td><td>Gradual</td></tr><tr><td>Skin</td><td>Pale, cool, clammy, sweating</td><td>Warm, dry, flushed, dehydrated</td></tr>
+<tr><td>Breathing</td><td>Normal to rapid, shallow</td><td><mark>Kussmaul (deep, fast); fruity breath</mark></td></tr>
+<tr><td>Other</td><td>Anxious, combative, seizure; may mimic stroke</td><td>Polyuria, polydipsia, polyphagia, weight loss</td></tr>
+<tr><td>Care</td><td>Oral glucose if alert and able to swallow</td><td>ABCs, oxygen, transport, ALS</td></tr></table>`],
+["Allergic reaction and anaphylaxis",`<ul><li><b>Mild reaction:</b> rhinorrhea, irritation cough, localized hives, anxiety, tachycardia.</li>
+<li><b>Anaphylaxis:</b> dyspnea, hoarseness, throat tightness, wheezing or stridor (silent chest is late), global urticaria, angioedema, flushing, paresthesias, nausea and cramping, confusion; hypotension and cyanosis are late.</li>
+<li>Care: scene safety, epinephrine IM immediately, oxygen, position, transport, reassess airway.</li>
+<li><b>Bee sting:</b> remove the patient from the scene, <mark>scrape off the stinger</mark>, wash with soap and water, ice 10 minutes at a time, remove jewelry.</li></ul>`],
+["Toxicology, environment and drowning",`<ul><li>Poison routes: ingestion, inhalation, absorption, injection. Poison control: 1-800-222-1222. Opioid overdose: slow, shallow breathing, pinpoint pupils, drowsiness; give naloxone and ventilate or do CPR as needed.</li>
+<li><b>Heat:</b> mild, move to a cool place, loosen clothing, cool packs, rehydrate if the airway is protected. Severe: ice or water immersion to body temperature below 102 °F.</li>
+<li><b>Hypothermia:</b> handle gently (rough handling can cause V-fib), don’t massage limbs, no caffeine or smoking. Alert mild to moderate: active rewarming (heat packs, warmed humidified O₂). Unconscious or severe: passive rewarming, prevent heat loss, remove wet clothes, transport with notification.</li>
+<li><b>Near-drowning:</b> scene safety, spinal precautions if indicated, immediate ventilation, treat hypothermia.</li></ul>`],
+["Behavioral emergencies and abuse",`<ul><li>Safety first. Be calm, direct and honest; keep some distance; don’t argue with delusions or play along with them; explain what you want to do; involve trusted family.</li>
+<li>Suicide scene check: weapons or hazards in reach, unsafe environment (window, bridge), self-harm evidence, imminent threat, underlying medical cause.</li>
+<li><b>Child abuse flags:</b> injury doesn’t fit the child’s development or story, delayed care, injuries at different healing stages, glove-pattern burns, cigarette-type marks, rectal or vaginal bleeding, caregiver behavior.</li>
+<li><b>Adult abuse flags:</b> caregiver apathy or defensiveness, vague explanations, repeated visits, injuries in various stages, depression, caregiver won’t let the patient answer.</li></ul>`]
+];
+var FC=[
+["AEIOU TIPS: A, E, I, O, U","Alcohol; Epilepsy, Endocrine, Electrolytes; Insulin; Opiates; Uremia"],
+["AEIOU TIPS: T, I, P, S","Trauma, Temperature; Infection; Poisoning, Psychogenic; Shock, Stroke, Seizure, Syncope"],
+["Signs of hypoxia","Anxiety, SpO₂ <94%, pallor to cyanosis, tachypnea, tachycardia; bradycardia is late"],
+["Precautions for meningitis","Contact (gloves, gown) and airborne (mask, goggles)"],
+["Influenza signs","Cough, fever, sore throat, fatigue and body aches, headache"],
+["When to check blood glucose","Altered mental status, stroke signs, diabetes history, hyper- or hypoglycemia signs, seizure"],
+["Signs of dehydration","Tachycardia, poor turgor, dry mucosa, sunken eyes, delayed refill, low urine output"],
+["Epinephrine, alpha 1","Vasoconstriction"],
+["Epinephrine, beta 1","Increases heart rate and cardiac output"],
+["Epinephrine, beta 2","Bronchodilation"],
+["Anaphylaxis treatment","Epinephrine IM immediately, oxygen, position, transport"],
+["Silent chest","Late sign of severe airway obstruction; wheezing stops because air isn’t moving"],
+["Angioedema","Swelling of face, lips, tongue, hands or feet"],
+["Global urticaria","Hives over the whole body; a sign of anaphylaxis"],
+["Bee sting care","Scrape off the stinger, wash, ice 10 minutes at a time, remove jewelry"],
+["Hematemesis","Vomiting bright red blood"],
+["Coffee-ground emesis","Partly digested blood from the upper GI tract"],
+["Melena","Tarry black stool from upper GI bleeding"],
+["Hematochezia","Bright red blood from the rectum"],
+["Insulin source","Beta cells of the pancreas; moves glucose into cells"],
+["Glucagon source","Alpha cells of the pancreas; releases stored glucose"],
+["Type 1 vs type 2 diabetes","Type 1: little or no insulin. Type 2: insulin resistance"],
+["DKA signs","High glucose, polyuria, polydipsia, polyphagia, Kussmaul breathing, fruity odor, dehydration"],
+["Kussmaul respirations","Deep, fast breathing that blows off CO₂ to offset acidosis"],
+["Hypoglycemia signs","Pale, cool, clammy; sweating; rapid pulse; confusion or combativeness; seizure"],
+["Hypoglycemia care","Oral glucose if alert and able to swallow"],
+["Dialysis complications","Dehydration, electrolyte imbalance, hypotension, cramps, bleeding or infection at access"],
+["Stroke assessment (Cincinnati)","Facial droop, arm drift, speech abnormality"],
+["Seizure phases","Aura, tonic, clonic, postictal"],
+["Seizure care","Protect head, clear area, suction ready, recovery position after, check glucose"],
+["Migraine care","Quiet, dark environment; consider no lights and siren; rule out serious causes"],
+["Severe heat illness care","Ice or water immersion to body temperature below 102 °F"],
+["Hypothermia handling","Gentle handling, no massage, no stimulants; remove wet clothes, insulate"],
+["Alert mild-moderate hypothermia","Active rewarming: heat packs, warmed humidified oxygen"],
+["Unconscious severe hypothermia","Passive rewarming and heat-loss prevention; transport with notification"],
+["Near-drowning priorities","Scene safety, immediate ventilation, spinal precautions if indicated, treat hypothermia"],
+["Child abuse red flag","Injury doesn’t fit development or story; glove-pattern burns; injuries at different healing stages"],
+["Adult abuse red flag","Vague explanations, defensive caregiver, repeated visits, caregiver answers for the patient"],
+["Approaching a schizophrenic patient","Be calm and direct; keep distance; don’t argue with delusions or play along"],
+["Suicidal patient scene check","Weapons, unsafe environment, self-harm evidence, imminent threat, medical cause"],
+["Nitroglycerin caution","Avoid with low BP or recent erectile-dysfunction drugs"],
+["Aspirin for chest pain","Chew it, unless allergic or told not to take it"],
+["Croup vs epiglottitis","Croup: barking cough. Epiglottitis: drooling, tripod, sick appearance; no throat exam"],
+["Choking, 2025 AHA (adult or child)","Alternate 5 back blows with 5 abdominal thrusts"],
+["Choking, 2025 AHA (infant)","5 back blows alternating with 5 chest thrusts"],
+["Opioid overdose signs","Slow shallow breathing, pinpoint pupils, drowsiness, blue lips; give naloxone"]
+];
+var Q=[
+["Which receptor action of epinephrine causes bronchodilation?",["Alpha 1","Beta 1","Beta 2","Alpha 2"],2,"Beta 2 stimulation relaxes bronchial smooth muscle."],
+["Which sign best fits DKA?",["Cool, clammy skin","Fruity breath and Kussmaul respirations","Slow shallow breathing","Pinpoint pupils"],1,"Deep, rapid breathing and fruity odor indicate ketoacidosis."],
+["Tarry black stool is called:",["Hematochezia","Melena","Hematemesis","Steatorrhea"],1,"Melena indicates digested blood from the upper GI tract."],
+["Which pair makes up the Cincinnati stroke scale?",["Face, arm, speech","Pulse, pressure, pupils","Aura, tonic, clonic","Airway, breathing, circulation"],0,"Facial droop, arm drift and speech."],
+["Which seizure phase is the \u201cresetting\u201d period?",["Aura","Tonic","Clonic","Postictal"],3,"The postictal phase follows the seizure."],
+["Alpha cells of the pancreas produce:",["Insulin","Glucagon","Epinephrine","Cortisol"],1,"Glucagon releases stored glucose."],
+["Which precaution set applies to meningitis?",["Gloves only","Contact plus airborne","Droplet only","None"],1,"Gloves and gown plus mask and goggles."],
+["Which is a late sign of hypoxia?",["Anxiety","Bradycardia","Tachypnea","Restlessness"],1,"Bradycardia signals decompensation."],
+["Which is NOT part of treating a bee sting?",["Scraping the stinger","Squeezing the stinger with tweezers","Washing the area","Removing jewelry"],1,"Squeezing can inject more venom."],
+["Heat stroke with severe symptoms is treated with:",["Warm blankets","Ice or water immersion to below 102 °F","Fluids only","Observation"],1,"Rapid active cooling is the priority."],
+["What should you avoid in a hypothermic patient?",["Handling gently","Massaging the limbs","Removing wet clothes","Insulating"],1,"Rough handling and massage can trigger V-fib and push cold blood to the core."],
+["Which is a sign of anaphylaxis, not just a mild reaction?",["Localized hives","Hoarseness and wheezing","Runny nose","Itching"],1,"Airway involvement signals anaphylaxis."]
+];
+function T(s,c,w,e){return[s,[c].concat(w),0,e]}
+var TQ={};
+TQ.ph=[
+T("A drug’s brand name chosen by the manufacturer is its:","Trade name",["Generic name","Chemical name","Official name"],"The trade name is the manufacturer’s brand name; the generic name is the nonproprietary name."),
+T("The expected, desired effect of a medication is its:","Action",["Side effect","Contraindication","Dose"],"The action is what the drug is expected to do."),
+T("A situation in which a drug should NOT be given is a:","Contraindication",["Indication","Side effect","Route"],"Contraindications are reasons to withhold a medication."),
+T("Any effect of a drug other than the desired one is a:","Side effect",["Indication","Action","Dose"],"Side effects are unintended actions."),
+T("The therapeutic reason for giving a particular drug is its:","Indication",["Contraindication","Side effect","Absorption"],"Indications are the conditions it is used for."),
+T("The process by which a drug moves through body tissues into the bloodstream is:","Absorption",["Adsorption","Excretion","Dilution"],"Absorption is movement through tissue; adsorption means binding to a surface."),
+T("Activated charcoal works by:","Adsorption, binding poison to its surface",["Absorption into the blood","Neutralizing acid","Causing vomiting"],"It sticks to many poisons in the gut."),
+T("The fastest route to deliver a medication into the circulation is:","Intravenous",["Oral","Sublingual","Intramuscular"],"IV delivers the drug straight into the blood."),
+T("Which does NOT affect the proper dose of a medication?","Generic substitutions of the same drug",["The patient’s age","The patient’s size","The desired action"],"Age, size and desired effect affect dosing; a generic equivalent does not change the dose."),
+T("Capsules are:","Gelatin shells filled with powdered or liquid medication",["Creams and ointments","Gases","Liquids mixed with water"],"Capsules are filled shells."),
+T("Lotions, creams and ointments are:","Topical medications",["Sublingual drugs","Suspensions","Gases"],"Topicals are applied to the skin."),
+T("A medication that must be shaken before use because particles settle is a:","Suspension",["Solution","Tablet","Gas"],"Activated charcoal is a suspension."),
+T("Oxygen is classified as a:","Gas",["Suspension","Tablet","Topical"],"Oxygen is delivered inhaled as a gas."),
+T("Which oxygen device is preferred when a patient breathes adequately and needs the highest concentration, up to about 90%?","Nonrebreathing mask",["Nasal cannula","Bag-mask with no reservoir","Simple oxygen tank only"],"A nonrebreather at 10–15 L/min delivers up to about 90% oxygen."),
+T("A nonrebreathing mask is usually run at:","10–15 L/min",["1–2 L/min","3–5 L/min","25 L/min"],"The reservoir must stay inflated."),
+T("A nasal cannula is run at about:","1–6 L/min",["10–15 L/min","15–25 L/min","0.1 L/min"],"It delivers a lower oxygen concentration."),
+T("Epinephrine causes which of these effects?","Bronchodilation, vasoconstriction and a faster heart rate and higher BP",["Only vasodilation","Only a slower heart rate","Only sedation"],"It acts on alpha and beta receptors."),
+T("Epinephrine is the specific antidote to the effects of:","Histamine release in anaphylaxis",["Insulin","Opioids","Alcohol"],"It opposes the effects of histamine."),
+T("Nitroglycerin relieves angina mainly by:","Dilating blood vessels to improve blood supply to the heart",["Making the heart beat harder","Raising blood pressure","Thickening the blood"],"Vasodilation reduces cardiac workload."),
+T("A common side effect of nitroglycerin is:","Headache and a drop in blood pressure",["A slow pulse only","Hives","Constipation"],"Headache and hypotension are common."),
+T("Oral glucose is given:","Between the cheek and gum or swallowed, to an alert patient who can swallow",["To an unresponsive patient","Intravenously","Only with water as a flush"],"It is a gel for conscious patients only."),
+T("A hypoglycemic man is unresponsive with snoring respirations. Medication most helpful for an EMT is:","Neither oral glucose nor insulin; manage the airway, give oxygen and call ALS",["Oral glucose","Insulin","Activated charcoal"],"An unresponsive patient can’t safely take oral glucose."),
+T("Before giving any medication you verify the “rights.” Which is NOT one?","Right insurance",["Right patient","Right dose","Right route"],"The rights are patient, medication, dose, route, time and documentation."),
+T("Before using a patient’s prescribed inhaler you should check:","Prescription is for this patient, drug, dose, route and expiration, then get medical direction",["Only the brand name","Only the expiration date","Nothing"],"Verify details and follow your protocol.")
+];
+TQ.mo=[
+T("The most important part of the scene size-up is:","Scene safety",["Number of patients","Calling resources","Nature of illness"],"You can’t help anyone if you become a patient."),
+T("Your awareness and concern for serious unseen injuries or illness is:","Index of suspicion",["General impression","Clinical impression","Nature of illness"],"A high index of suspicion prompts careful assessment."),
+T("“Why did you call EMS today?” helps determine the:","Chief complaint",["Past history","Medications","Allergies"],"The chief complaint is the reason for the call."),
+T("An alone, unresponsive medical patient. To obtain history you should:","Look for medical alert tags, medication bottles and ask bystanders or family",["Skip history","Wait for ALS","Shake him awake"],"Gather clues from the scene."),
+T("Which mnemonic helps obtain a focused medical history?","SAMPLE",["AVPU","DCAP-BTLS","PEARRL"],"SAMPLE: signs and symptoms, allergies, medications, past history, last oral intake, events."),
+T("Which mnemonic assesses pain?","OPQRST",["SAMPLE","AVPU","AEIOU"],"Onset, provocation, quality, radiation, severity, time."),
+T("Medical patients with altered mental status are generally:","High priority for transport",["Low priority","Left for a later unit","Not transported"],"AMS, breathing problems and shock are priority signs."),
+T("Lights and siren are appropriate when the patient:","Has a life-threatening condition",["Has any complaint","Is stable and alert","Refused care"],"Use them only when warranted."),
+T("A cardiac arrest patient should be transported to:","The closest appropriate facility",["The farthest hospital","The patient’s doctor’s office","No one; stop care"],"Time matters."),
+T("In an unstable patient, reassess vital signs about every:","5 minutes",["30 minutes","45 minutes","2 hours"],"Stable patients: about every 15 minutes."),
+T("Which is NOT true of HIV?","It is easily spread through the air",["It is spread by blood and body fluids","There is no vaccine","Needlesticks are a risk"],"HIV is not airborne."),
+T("After a needlestick from an HIV-positive patient you should:","Wash the area, report immediately and follow your exposure plan",["Ignore it","Squeeze the wound only","Wait a week"],"Report and get follow-up promptly."),
+T("Hepatitis B is mainly spread by:","Blood and body fluids",["Food and water","Mosquitoes","Casual contact"],"A vaccine is available."),
+T("For which hepatitis is a vaccine NOT available?","Hepatitis C",["Hepatitis A","Hepatitis B","None of them"],"Hepatitis C has no vaccine."),
+T("Hepatitis A is spread by:","The fecal-oral route",["Needlesticks only","The air","Sneezing only"],"Contaminated food, water or hands."),
+T("Tuberculosis is spread:","By the airborne route; wear a HEPA or N95 mask",["Only by blood","By food","Only by sex"],"Use respiratory protection."),
+T("MRSA is believed to spread mainly by:","Contact, such as unwashed hands",["Food","Insects","Water"],"Hand hygiene and gloves limit spread."),
+T("A patient has fever, headache, stiff neck and altered mental status. Suspect:","Meningitis",["Hypoglycemia","Asthma","Sprain"],"Use contact and respiratory precautions."),
+T("Whooping cough (pertussis) is caused by:","Bacteria, and spreads through the air",["A virus only","A fungus","Parasites"],"It is a bacterial airborne infection."),
+T("Syphilis chancres are most commonly found:","On the genitals",["On the face","On the knees","On the back"],"The sores usually appear at the infection site."),
+T("Strength or ability of a pathogen to cause disease is called:","Virulence",["Incubation","Immunity","Resistance"],"More virulent germs cause worse disease."),
+T("Which exam finding in the neck should you look for in a medical patient?","Jugular vein distention and tracheal deviation",["Only hair length","Only tattoos","Only skin color"],"These point toward heart or chest problems."),
+T("You focus on one detail and miss the bigger picture. This is called:","Tunnel vision",["Index of suspicion","General impression","Triage"],"Step back and reassess."),
+T("Needle track marks along the veins may indicate:","Possible IV drug use",["Allergies","Diabetes only","Old burns"],"Note them for hospital staff.")
+];
+TQ.ne=[
+T("A seizure with unconsciousness and severe twitching of all muscles is a:","Generalized (tonic-clonic) seizure",["Simple partial seizure","TIA","Migraine"],"It affects the whole body."),
+T("A seizure that affects a limited part of the brain is a:","Partial seizure",["Generalized seizure","Febrile seizure only","Syncope"],"It may cause twitching of one limb."),
+T("The warning sense before a seizure is the:","Aura",["Postictal state","Tonic phase","Clonic phase"],"Not everyone has one."),
+T("The period after a seizure with labored breathing and altered mental status is the:","Postictal state",["Aura","Ictus","Status epilepticus"],"It often lasts 5–30 minutes or longer."),
+T("True or false in practice: the postictal state usually lasts only 3 to 5 minutes.","False; it commonly lasts longer, often 5–30 minutes or more",["True","True for adults only","True for children only"],"Don’t assume recovery in minutes."),
+T("A seizure lasting more than 30 minutes, or repeated seizures without recovery, is:","Status epilepticus",["Aura","TIA","Postictal state"],"It is a life-threatening emergency."),
+T("Febrile seizures are caused by:","Sudden high fever, typically in young children",["Low glucose","Head injury only","Stroke"],"Treat as a seizure and transport."),
+T("Complex partial seizures originate in the:","Temporal lobe",["Occipital lobe","Cerebellum","Brain stem"],"They cause altered awareness."),
+T("Which part of the brain coordinates movement, such as playing the piano?","Cerebellum",["Cerebrum","Brain stem","Spinal cord"],"The cerebellum controls coordination."),
+T("Breathing, blood pressure, swallowing and pupil constriction are controlled by the:","Brain stem",["Cerebrum","Cerebellum","Occipital lobe"],"These are basic life functions."),
+T("There are how many pairs of cranial nerves?","12",["8","10","31"],"Spinal nerves total 31 pairs."),
+T("The most common type of stroke is:","Ischemic",["Hemorrhagic","Cardiac","Febrile"],"A blockage cuts off blood flow."),
+T("A stroke from a clot that formed elsewhere and traveled to the brain is a:","Cerebral embolism",["Thrombus in the lung","Aneurysm","Migraine"],"An embolus travels."),
+T("Patients at highest risk of hemorrhagic stroke often have:","Uncontrolled hypertension or an aneurysm",["Low glucose","Mild anemia","Fever"],"High pressure can rupture vessels."),
+T("A sudden severe headache described as the worst of her life suggests:","Subarachnoid hemorrhage",["Tension headache","Sinus headache","Dehydration"],"A ruptured berry aneurysm is common."),
+T("A TIA is a stroke whose symptoms resolve completely in less than:","24 hours",["30 minutes","1 hour","12 hours"],"Most last minutes, and it warns of a possible bigger stroke."),
+T("Aphasia is:","Inability to produce or understand speech",["Weakness on one side","Slurred speech","Loss of bowel control"],"Hemiparesis is one-sided weakness."),
+T("Weakness on one side of the body is:","Hemiparesis",["Aphasia","Ataxia","Incontinence"],"It is a stroke sign."),
+T("Which conditions can mimic a stroke?","Hypoglycemia, postictal state and subdural bleeding",["Sprain","Sunburn","Hiccups"],"Always check glucose."),
+T("The best quick tool to assess for stroke is the:","Cincinnati Prehospital Stroke Scale",["AVPU only","Rule of nines","APGAR"],"Check face, arm and speech."),
+T("A patient answers “What day is it?” with “butterfly.” This suggests a problem in the:","Language centers, often the left hemisphere",["Right hemisphere only","Cerebellum","Spinal cord"],"Wrong words point to a language-area problem."),
+T("Which time detail is the key piece of stroke documentation?","Time of onset (last known well)",["The patient’s occupation","The brand of her shoes","Her childhood illnesses"],"Time determines treatment."),
+T("Stroke patients can lose the airway without warning, so you should:","Monitor the airway and breathing and be ready to suction",["Give food","Leave him unattended","Withhold oxygen"],"Airway protection comes first."),
+T("Which headache is the second most common and linked to blood vessel changes at the base of the brain?","Migraine",["Tension","Sinus","Compression"],"Light and sound sensitivity are common."),
+T("Headache, vomiting, altered mental status and seizures are early signs of:","Increased intracranial pressure",["Hypoglycemia","Anemia","Dehydration"],"Watch for Cushing’s reflex later."),
+T("Several people with headaches in the same building suggest:","Carbon monoxide or another toxic exposure",["Migraine","Stress only","Influenza only"],"Consider scene safety and hazards."),
+T("A patient is postictal, opens eyes to pinch, makes garbled sounds and withdraws from pain. GCS is:","8",["10","12","6"],"Eyes 2 + verbal 2 + motor 4 = 8."),
+T("Dilantin and Tegretol are used to control:","Seizures",["Diabetes","Asthma","Angina"],"They are anticonvulsants.")
+];
+TQ.gi=[
+T("Inflammation of the peritoneum is:","Peritonitis",["Appendicitis","Cystitis","Diverticulitis"],"It causes rigid, painful abdomen."),
+T("The lining of the abdominal wall is the:","Parietal peritoneum",["Visceral peritoneum","Omentum","Mesentery"],"The visceral layer covers the organs."),
+T("Pain felt in a location away from the source organ is:","Referred pain",["Rebound pain","Colic","Guarding"],"For example, spleen to the left shoulder."),
+T("Visceral pain is typically:","Dull, poorly localized",["Sharp and well localized","Only in the back","Absent"],"Parietal pain is sharp and localized."),
+T("Rigid abdominal muscles protecting against further irritation are called:","Guarding",["Distention","Ileus","Colic"],"Guarding suggests peritoneal irritation."),
+T("Paralysis of the bowel causing distention is:","Ileus",["Hernia","Colitis","Hemorrhoid"],"Gas and fluid collect and the abdomen swells."),
+T("Pain starting around the umbilicus then moving to the right lower quadrant suggests:","Appendicitis",["Kidney stone","Hernia","GERD"],"It localizes as the parietal peritoneum is irritated."),
+T("Severe flank pain radiating to the groin in a restless patient suggests:","Kidney stone",["Appendicitis","Cystitis","Hernia"],"Stones cause colicky pain."),
+T("Lower abdominal pain above the pubic bone with frequent urination suggests:","Cystitis (bladder infection)",["Kidney stone","Ileus","Pancreatitis"],"Urinary tract infection is common."),
+T("Infected pouches in the colon wall are called:","Diverticulitis",["Appendicitis","Cirrhosis","Ulcer"],"Pain is often left lower quadrant."),
+T("Pregnancy, straining at stool and chronic constipation can cause:","Hemorrhoids",["Kidney stones","Peritonitis","Ulcers"],"Pressure swells rectal veins."),
+T("Excess pressure in the portal system, often from liver disease, can cause:","Esophageal varices",["Ileus","Kidney stones","Hernia"],"They can bleed massively."),
+T("Vomiting, shock, alcohol use and eating disorder together suggest:","GI bleeding such as esophageal tear or varices",["Appendicitis","Cystitis","Hernia"],"Vomiting blood is dangerous."),
+T("A pulsating abdominal mass with tearing pain in an older patient suggests:","Abdominal aortic aneurysm",["Hernia","Cystitis","Gastritis"],"Rupture causes massive hemorrhage."),
+T("Heartburn, pain with swallowing and a sense of an object stuck suggest:","Esophageal or reflux disease (GERD)",["Appendicitis","Pancreatitis","Kidney stones"],"Acid backs up into the esophagus."),
+T("Alcohol use and gallstones are common causes of:","Pancreatitis",["Cystitis","Hemorrhoids","Hernia"],"It causes severe epigastric pain radiating to the back."),
+T("Pain in the right upper quadrant after a fatty meal suggests:","Gallbladder disease",["Appendicitis","Diverticulitis","Cystitis"],"Cholecystitis often follows fatty food."),
+T("Which is a function of the liver?","Making bile and clotting factors, and detoxifying blood",["Producing insulin","Producing urine","Pumping blood"],"The pancreas makes insulin."),
+T("The kidneys help regulate:","Fluid balance, acidity and blood pressure",["Digestion of starch","Oxygen carrying","Bile"],"They filter waste."),
+T("When palpating the abdomen, you should start:","Away from the area of pain",["On the most painful spot","With deep pressure","At the back"],"This lowers guarding and distrust."),
+T("A woman of childbearing age with abdominal pain needs a question about:","Last menstrual period and possible pregnancy",["Her shoe size","Her job only","Her TV habits"],"Ectopic pregnancy can mimic GI conditions."),
+T("A patient missed dialysis and is weak. This may be the first sign of:","Hyperkalemia and dysrhythmia",["Hypoglycemia","Appendicitis","Anaphylaxis"],"Potassium builds up."),
+T("Adverse effects of dialysis include:","Hypotension, cramps, nausea and bleeding at the access site",["Hives","Stridor","Hematuria only"],"Check the shunt site."),
+T("A 52-year-old woman has right flank pain radiating to her groin. Best care:","Position of comfort, oxygen as needed, transport",["Give fluids by mouth","Hot pack and observe","Walk her to the ambulance"],"Suspect a kidney stone."),
+T("A patient has abdominal pain and shock signs. Most important:","Treat for shock, nothing by mouth, rapid transport",["Palpate deeply","Give water","Give antacids"],"Suspect internal bleeding."),
+T("Buildup of waste products in the blood from kidney failure is:","Uremia",["Ileus","Cystitis","Hematemesis"],"It can cause altered mental status."),
+T("Which is NOT a typical cause of an acute abdomen?","Sprained ankle",["Appendicitis","Perforated ulcer","Bowel obstruction"],"Acute abdomen means sudden severe abdominal pain.")
+];
+TQ.en=[
+T("The hormone produced by the pancreas that lets glucose enter cells is:","Insulin",["Glucagon","Epinephrine","Cortisol"],"Beta cells make insulin."),
+T("Insulin is produced by the:","Pancreas",["Liver","Kidney","Spleen"],"The islets of Langerhans make insulin."),
+T("The only organ that does not require insulin to take up glucose is the:","Brain",["Heart","Liver","Muscle"],"The brain depends on constant glucose."),
+T("Per many EMT textbooks, normal blood glucose is about:","80–120 mg/dL",["20–40 mg/dL","200–300 mg/dL","400–500 mg/dL"],"Hypoglycemia is below about 60–70."),
+T("Excessive urination is:","Polyuria",["Polydipsia","Polyphagia","Dysuria"],"High glucose pulls fluid into urine."),
+T("Excessive thirst is:","Polydipsia",["Polyuria","Polyphagia","Anuria"],"A classic diabetic sign."),
+T("Excessive eating from cellular “hunger” is:","Polyphagia",["Polyuria","Polydipsia","Anorexia"],"Cells can’t use the available glucose."),
+T("The fruity breath odor of DKA is caused by:","Ketones in the blood",["Alcohol","Low glucose","Dehydration only"],"Fats are burned for fuel."),
+T("Deep, rapid breathing in DKA is:","Kussmaul respirations",["Cheyne-Stokes","Biot’s","Agonal"],"The body blows off CO₂ to offset acid."),
+T("Type 1 diabetes is mainly:","A lack of insulin, usually dependent on insulin injections",["Insulin resistance only","Diet only","Caused by thyroid disease"],"Type 2 often involves resistance."),
+T("Oral diabetic medications are most often used for:","Type 2 diabetes",["Type 1 diabetes","Hypoglycemia","Sickle cell disease"],"They help the body use insulin."),
+T("Causes of insulin shock (hypoglycemia) include:","Too much insulin, not eating, vomiting or excess exercise",["Too much food and no insulin","Fever","Dehydration only"],"Insulin with too little glucose."),
+T("Hypoglycemia often develops:","Quickly, within minutes",["Over days","Over weeks","Only at night"],"DKA develops more slowly."),
+T("Signs of hypoglycemia include:","Pale, cool, clammy skin, sweating, confusion and rapid pulse",["Hot dry skin and fruity breath","Slow deep breathing","Hives"],"DKA is warm and dry."),
+T("Always suspect hypoglycemia in any patient with:","Altered mental status",["A sprain","A rash only","A headache only"],"Check glucose."),
+T("An unresponsive diabetic’s most important first step is:","Airway management",["Oral glucose","Insulin","Fluids by mouth"],"Maintain airway, breathing and call ALS."),
+T("Oral glucose is contraindicated when the patient:","Is unresponsive or unable to swallow",["Is confused but swallowing","Is sweating","Has diabetes"],"Aspiration risk."),
+T("After giving oral glucose, reassess and watch for:","Improved mental status and airway protection",["Hives","Rash","Fever"],"Be ready for seizures or vomiting."),
+T("Children with insulin shock can decompensate faster because of:","Higher metabolic rate and small glycogen reserves",["Larger glycogen stores","Slower metabolism","Greater blood volume"],"They exhaust glucose quickly."),
+T("A patient in DKA needs:","Hospital care, fluids and insulin",["Oral glucose only","Observation only","Sleep"],"EMT care is supportive."),
+T("Sickle cell disease affects which blood cells?","Red blood cells, which become crescent-shaped",["White cells","Platelets only","Plasma"],"They block small vessels."),
+T("An African American patient with severe generalized pain may have:","Sickle cell crisis",["Hypoglycemia","Hemophilia","Appendicitis"],"Ask about known sickle cell disease."),
+T("Care for sickle cell crisis includes:","Oxygen, comfort, keep warm, ask about triggers, transport",["Cold packs on the chest","Withhold oxygen","Walk him"],"Dehydration and hypoxia can trigger a crisis."),
+T("Hemophilia is:","Inability to form blood clots normally",["Excessive clotting","Low sodium","A kidney disease"],"Even minor bleeding can be serious."),
+T("Emergency care for a hemophilia patient includes:","Direct pressure, oxygen and rapid transport",["Tourniquet first only","Ignoring minor bleeding","Aspirin"],"Avoid delay."),
+T("Hospital treatment for hemophilia may include:","Clotting factor replacement",["Insulin","Antibiotics only","Oral glucose"],"The missing factor is replaced."),
+T("A blood clot forming deep in a vein is a:","Deep vein thrombosis",["Aplastic crisis","Sickle cell crisis","Hemolysis"],"It can travel to the lungs as an embolus."),
+T("Which blood cells carry oxygen?","Red blood cells (erythrocytes)",["White blood cells","Platelets","Plasma"],"Leukocytes fight infection."),
+T("Signs of dehydration include:","Dry mucous membranes, tachycardia and poor skin turgor",["Hives","Wheezing","Bradycardia only"],"Seen in DKA and vomiting.")
+];
+TQ.im=[
+T("The body’s response to a substance it sees as foreign is a(n):","Allergic reaction",["Infection","Seizure","Poisoning"],"The immune system overreacts."),
+T("A whole-body, life-threatening allergic reaction is:","Anaphylaxis",["Urticaria","Rhinitis","Contact dermatitis"],"It can cause airway swelling and shock."),
+T("Multiple raised, itchy skin areas are:","Hives (urticaria)",["Wheezing","Stridor","Edema only"],"Localized or generalized."),
+T("A harsh, high-pitched sound heard on inspiration from upper airway narrowing is:","Stridor",["Wheezing","Rhonchi","Rales"],"A sign of upper airway swelling."),
+T("Wheezing in allergic reactions occurs because of:","Fluid and mucus in narrowed bronchioles",["A broken rib","Low glucose","Heart block"],"Lower airway bronchospasm."),
+T("Which chemicals released in allergic reactions cause vessel dilation and swelling?","Histamine",["Insulin","Glucagon","Naloxone"],"Epinephrine opposes histamine."),
+T("The most common causes of allergic reactions include:","Foods, medications, insect stings, plants and chemicals",["Only pets","Only weather","Only exercise"],"Shellfish, nuts and penicillin are common."),
+T("The adult epinephrine auto-injector contains:","0.3 mg",["0.1 mg","0.15 mg","3 mg"],"Children use the 0.15 mg device."),
+T("The pediatric auto-injector contains:","0.15 mg",["0.3 mg","0.03 mg","1 mg"],"Used for small children per protocol."),
+T("The auto-injector is placed on the:","Lateral mid-thigh",["Upper arm only","Abdomen","Buttock only"],"It can go through clothing."),
+T("After the auto-injector is removed you should:","Massage the site, dispose of it safely and reassess",["Reuse it","Leave the patient","Cap it by hand"],"Note the time and watch for relapse."),
+T("Common side effects of epinephrine include:","Fast heart rate, palpitations, anxiety, tremor and pallor",["Hives","Sleepiness","Slow breathing"],"They are expected."),
+T("The stinger of a honeybee is:","Barbed and remains in the wound",["Straight","Smooth","Not venomous"],"Scrape it off."),
+T("Signs of anaphylaxis involving the circulatory system include:","Low blood pressure, rapid pulse and flushing",["High glucose","Slow deep breathing","Cool dry skin only"],"Vasodilation causes shock."),
+T("A 12-year-old stung many times by wasps has wheezing and swelling. Priority:","Epinephrine IM, oxygen and rapid transport",["Observation only","Ice only","Oral fluids"],"Treat anaphylaxis immediately."),
+T("A patient with shellfish allergy has hives and throat tightness after dinner. First:","Assist or give epinephrine per protocol and prepare to ventilate",["Wait","Give water","Walk it off"],"Airway swelling can progress quickly."),
+T("A patient’s hives are present but breathing is normal. Best:","Monitor closely, oxygen as needed and transport",["Release","Epinephrine always","Ignore"],"It may progress."),
+T("Why is speed essential in severe anaphylaxis?","Airway swelling and shock can develop rapidly",["Only because of pain","To collect histories","For paperwork"],"Time is critical."),
+T("During history for an allergic reaction, ask about:","What the patient was exposed to, how long ago, past reactions and medications",["Hair color","Favorite food only","Car model"],"Use SAMPLE."),
+T("After epinephrine, symptoms return in 10 minutes. Per protocol:","Repeat the dose if authorized and transport",["Do nothing","Give oral glucose","Wait 30 minutes"],"Relapse can occur."),
+T("Epinephrine works rapidly to:","Dilate bronchioles, constrict blood vessels and reduce swelling",["Lower blood pressure","Slow the heart","Increase histamine"],"It reverses the allergic response."),
+T("A patient reports a prior severe reaction and now has itching only. Best:","Monitor, ready epinephrine, oxygen and transport",["Ignore","Discharge","Give glucose"],"Prior severe reactions raise risk."),
+T("A mild reaction can become anaphylaxis, so you should:","Reassess frequently",["Assume it’s harmless","Skip vitals","Avoid transport"],"Conditions change quickly.")
+];
+TQ.to=[
+T("The usual adult dose of activated charcoal is about:","25–50 g (about 1 g/kg)",["1–2 g","500 g","5 g"],"Children get less, about 1 g/kg."),
+T("Activated charcoal is given as a:","Suspension, shaken well before use",["Gas","Cream","Injection"],"Shaking mixes the settled charcoal."),
+T("A major side effect of activated charcoal is:","Vomiting and black stools",["Hives","Hypotension","Fever"],"Watch the airway."),
+T("Activated charcoal should NOT be given to:","A patient with altered mental status or who can’t swallow",["An alert patient with an ingested drug","Anyone over 18","Diabetics"],"Aspiration risk."),
+T("The general treatment of a poisoned patient is NOT to:","Induce vomiting",["Support ABCs","Call poison control","Identify the poison"],"Don’t induce vomiting."),
+T("Approximately 80% of poisonings occur by:","Ingestion",["Inhalation","Injection","Absorption"],"Ingestion is the most common route."),
+T("The most worrisome route for rapid harm is:","Inhalation and injection, which reach the blood fastest",["Ingestion always","Absorption always","None"],"Inhaled and injected poisons act quickly."),
+T("The most important concern with an organophosphate exposure is:","Protecting yourself and decontamination before care",["Giving charcoal","Inducing vomiting","Waiting for family"],"Avoid becoming a patient."),
+T("Cholinergic agents include:","Nerve gas, organophosphate insecticides and some mushrooms",["Aspirin","Alcohol only","Insulin"],"Signs: salivation, lacrimation, urination, diarrhea."),
+T("Anticholinergic overdose typically causes:","Dry skin, dilated pupils, fever and confusion",["Sweating and pinpoint pupils","Slow pulse","Wheezing only"],"Think dry and flushed."),
+T("Pinpoint pupils with slow breathing suggest:","Opioid overdose",["Stimulant overdose","Anticholinergic","Alcohol only"],"Naloxone reverses opioids."),
+T("Which is an opioid?","Vicodin, Demerol, Dilaudid",["Xanax","Cocaine","Ethanol"],"Hydrocodone, meperidine and hydromorphone are opioids."),
+T("Xanax, Valium and Librium are:","Benzodiazepines (sedative-hypnotics)",["Opioids","Stimulants","Antidepressants only"],"They depress the CNS."),
+T("Alcohol is a:","Central nervous system depressant",["Stimulant","Opioid","Hallucinogen only"],"High doses can stop breathing."),
+T("The most commonly abused drug in the United States is:","Alcohol",["Cocaine","Heroin","Marijuana"],"Alcohol use is widespread."),
+T("Alcohol withdrawal can cause:","Tremors, hallucinations and seizures (delirium tremens)",["Hypoglycemia only","Hives","Bradycardia"],"DTs are serious."),
+T("Ringing in the ears is associated with overdose of:","Aspirin (salicylates)",["Acetaminophen","Opioids","Insulin"],"Tinnitus is a classic salicylate sign."),
+T("Cocaine and amphetamines are:","Stimulants",["Depressants","Opioids","Antidotes"],"They raise heart rate and BP."),
+T("Chemical in the eyes should be irrigated for at least:","15 minutes (longer for alkalis), from the nose outward",["30 seconds","2 minutes","Not at all"],"Flush away from the other eye."),
+T("A patient has dry powder chemical on the skin. First:","Brush it off, then flush with large amounts of water",["Flush without brushing","Neutralize","Cover only"],"Dry chemicals activate with water."),
+T("Phosphorus and elemental sodium:","React with water, so don’t flush them with water",["Need lots of water","Are harmless","Are inhaled only"],"Remove and cover; follow hazmat guidance."),
+T("Inhaled chlorine causes:","Lung and eye irritation, cough and chest tightness",["No effects","Only fever","Hypoglycemia"],"Remove from exposure and give oxygen."),
+T("Burning or blistering of mucous membranes suggests:","Ingested corrosive substance",["Plants only","Opioids","Heat stroke"],"Don’t induce vomiting."),
+T("A young woman took many pills and is arousable for short periods. Priority:","Airway protection and ABCs",["Charcoal immediately","Induce vomiting","Observe"],"Her mental status may drop."),
+T("Which is NOT a part of standard poison care?","Induce vomiting with syrup of ipecac",["Remove from source","Support airway","Contact poison control"],"Ipecac is no longer used."),
+T("Injected poisons, such as venom, are hard to remove because they:","Enter the bloodstream or tissue",["Evaporate","Are always inert","Are too diluted"],"Treat symptoms and transport."),
+T("Several people with headache and nausea in a closed house in winter. Suspect:","Carbon monoxide",["Anxiety","Food allergy","Influenza only"],"Move them out and give high-flow oxygen."),
+T("A child swallowed a cleaning product and is alert. Next:","Call poison control or medical direction, bring the container",["Induce vomiting","Give milk only","Wait"],"Get product details.")
+];
+TQ.ps=[
+T("A behavioral emergency is:","Abnormal behavior that threatens the patient or others or interferes with daily life",["Any sadness","Any fear","Any anger"],"It requires intervention."),
+T("Organic brain syndrome is caused by:","Physical problems such as hypoxia, low glucose, infection or head injury",["Only childhood events","Only stress","Only diet"],"Treat the medical cause."),
+T("A functional disorder is one:","With no known physical cause",["Caused by head injury","Caused by hypoxia","Always dementia"],"Psychiatric illnesses are often functional."),
+T("Which can cause behavioral changes in older adults?","Urinary tract infection",["Sprain","Sunburn","Hiccups"],"Always check for medical causes."),
+T("Before dealing with a disturbed patient you should first consider:","Scene safety and risk of violence",["Documentation only","Billing","The patient’s hobbies"],"Safety is first."),
+T("A disturbed patient who is violent or armed should be managed by:","Law enforcement before EMS enters",["EMS alone","The family","Bystanders"],"Don’t enter an unsafe scene."),
+T("Good tactics for a patient who is agitated include:","Staying calm, speaking clearly and maintaining safe distance",["Arguing","Yelling","Cornering him"],"Don’t challenge delusions."),
+T("A patient says he is “God.” You should:","Not argue; talk about real things and explain what you want to do",["Argue the point","Play along","Laugh"],"Don’t challenge or humor delusions."),
+T("Should you ask a patient directly whether he is thinking of suicide?","Yes; asking does not cause suicide",["No, never","Only after restraint","Only police"],"Direct questions help assess risk."),
+T("Which is a risk factor for suicide?","Prior attempt, depression, substance abuse, access to firearms, recent loss",["Good support","Stable job","No history"],"Also giving away possessions."),
+T("A suicidal patient on a ledge. First concern:","Scene safety and calm communication; request appropriate resources",["Grab him","Ignore","Yell"],"Don’t put yourself in danger."),
+T("When must a patient be restrained?","When he is a danger to self or others, with medical direction or police support",["Any time he is anxious","To save time","At crew convenience"],"Use only necessary reasonable force."),
+T("Who can ordinarily order restraint?","Medical direction or law enforcement per local law",["The patient’s neighbor","Dispatch only","An EMT alone, always"],"Know your protocol."),
+T("How many people should be present to restrain a patient?","At least four",["One","Two","None"],"Enough people to restrain safely."),
+T("Which position should NOT be used for restraint?","Face down (prone) with weight on the back",["Supine on a stretcher","On the side","Supported"],"Prone restraint risks positional asphyxia."),
+T("While a patient is restrained, you must frequently reassess:","Airway, breathing, circulation and the restraints",["Only the straps","Only his mood","Nothing"],"Monitor continuously."),
+T("When documenting restraint, record:","The reasons, method, who ordered it and the patient’s status",["Nothing","Only the time","His age only"],"Document thoroughly."),
+T("Restraining a patient without proper justification can lead to:","Charges such as assault, battery or false imprisonment",["Nothing","Bonuses","Citations for the patient"],"Use reasonable force."),
+T("When a patient lacks competence to consent, the law assumes:","Implied consent",["Refusal","No consent","Parental consent"],"Treat emergencies."),
+T("The most common cause of dementia is:","Alzheimer’s disease",["Stroke","Infection","Head injury"],"Primary progressive dementia."),
+T("Delirium differs from dementia because delirium:","Is acute and often reversible",["Is slowly progressive","Never changes","Only occurs in children"],"Look for a cause such as infection."),
+T("Signs of agitated delirium may include:","Extreme agitation, sweating, high temperature and hallucinations",["Calm sleep","Slow pulse","Hives"],"Treat as a medical emergency."),
+T("A patient is depressed after losing a job. This is:","A possible depressive reaction; assess suicide risk",["Always normal","Never serious","A physical illness only"],"Ask about thoughts of self-harm."),
+T("Low glucose or hypoxia can mimic psychiatric illness, so you should:","Check glucose and oxygenation",["Assume psychiatric","Ignore","Restrain first"],"Rule out medical causes."),
+T("Which statement is FALSE?","All people with mental illness are violent",["Mental illness can be treated","Many patients are not dangerous","Medical causes can mimic psychiatric ones"],"Avoid stereotypes."),
+T("A man in his 50s says “You’ll never take me alive.” Priority:","Retreat and call law enforcement; do not engage alone",["Restrain him alone","Argue","Ignore the threat"],"Your safety comes first."),
+T("When talking with a disturbed patient you should:","Use calm eye contact, a quiet tone and honest explanations",["Whisper","Stare constantly","Lie to him"],"Build trust.")
+];
+var TOPS=[["ph","Pharmacology principles"],["mo","Medical overview"],["ne","Neurologic"],["gi","GI and urologic"],["en","Endocrine and hematologic"],["im","Immunologic"],["to","Toxicology"],["ps","Psychiatric"],["re","Respiratory (Ch 15)"],["ca","Cardiovascular (Ch 16)"]];
+TQ.ph=TQ.ph.concat([
+T("Pharmacodynamics describes:","How a medication works on the body",["How the body breaks down a drug only","The cost of a drug","How drugs are packaged"],"The textbook defines it as the process by which a medication works on the body."),
+T("An agonist is a drug that:","Stimulates receptors",["Blocks receptors","Dissolves in water","Lowers fever only"],"An antagonist binds a receptor and blocks other drugs or chemicals."),
+T("An antagonist is a drug that:","Binds a receptor and blocks other medications or chemicals",["Stimulates receptors","Only treats pain","Is always a gas"],"Naloxone is an example."),
+T("Enteral medications enter the body through:","The digestive system",["The skin","The lungs only","The veins"],"Parenteral drugs enter by some other means."),
+T("Which route means “under the tongue”?","Sublingual (SL)",["Per os (PO)","Intranasal (IN)","Subcutaneous (SC)"],"Nitroglycerin is often given SL."),
+T("Intraosseous (IO) means a drug is given:","Into the bone",["Into the muscle","Under the skin","Into the nose"],"IV is into the vein; IM is into the muscle."),
+T("Which dosage form directs an exact amount of drug through the mouth into the lungs?","Metered-dose inhaler",["Suspension","Capsule","Topical ointment"],"An MDI delivers the same amount each time."),
+T("A mixture that will separate if it stands or is filtered is a:","Suspension",["Solution","Gel","Gas"],"Solutions do not separate."),
+T("Nitroglycerin paste or an adhesive patch is a:","Transcutaneous (transdermal) medication",["Topical with local effect only","Sublingual medication","Gas"],"It is absorbed through the skin and can have systemic effects; touching it can expose you."),
+T("Medications should be given only:","Under the authorization of medical control (per protocol)",["Whenever you think it helps","If the patient asks","By the family"],"Errors almost always come from skipping the six rights."),
+T("The EMT unit may carry which medications?","Oxygen, oral glucose, activated charcoal, aspirin and epinephrine",["Insulin and morphine","Antibiotics","Sedatives"],"The state, department and medical director define the exact list."),
+T("Oral glucose is a:","Semiliquid (gel) given only by mouth",["Gas","Injection","Topical cream"],"It is not given to an unconscious patient or one who can’t protect the airway."),
+T("Aspirin helps in a heart attack because it:","Prevents platelets from clumping, stopping clots from forming or growing",["Dilates vessels","Slows the heart","Lowers glucose"],"It inhibits platelet aggregation."),
+T("Aspirin should not be given to:","Patients with hypersensitivity to aspirin, and generally not to children",["Adults with chest pain without allergy","Alert adults","Anyone over 50"],"Also use caution with bleeding disorders or liver damage."),
+T("Before giving nitroglycerin you must:","Check blood pressure, confirm it is prescribed to the patient and get an order",["Give it first","Check temperature","Skip the BP"],"Nitroglycerin can drop BP."),
+T("After a nitroglycerin dose, wait before repeating:","About 5 minutes",["30 seconds","2 hours","No wait"],"Monitor vital signs and follow local protocol."),
+T("One metered nitroglycerin spray equals:","One tablet",["Two tablets","Half a tablet","A full dose of aspirin"],"Spray on or under the tongue."),
+T("Naloxone effects may not last as long as opioids, so:","Repeated doses may be needed",["One dose is always enough","It reverses alcohol","It treats low glucose"],"It can also cause severe withdrawal."),
+T("The most common technique for EMT naloxone administration is:","Intranasal",["Intraosseous","Rectal","Sublingual"],"A mucosal atomizer device is used."),
+T("A spacer on an inhaler is especially useful for:","Young children",["Adults only","Nitroglycerin spray","Oxygen"],"It avoids spray misdirection."),
+T("Which is the only medication effective during an acute attack of shortness of breath?","A fast-acting rescue inhaler",["A maintenance inhaler","Aspirin","Oral glucose"],"Maintenance inhalers are not for an acute attack."),
+T("A small-volume nebulizer:","Takes longer than an MDI but works well in moderate to severe distress",["Is faster than an MDI","Cannot be used with BVM","Needs no oxygen source"],"It can be used during CPAP and BVM ventilation."),
+T("If a medication error occurs, you should:","Provide care, notify medical control, follow protocol and document honestly",["Hide it","Tell only your partner","Wait until the next shift"],"Report and document thoroughly."),
+T("Over-the-counter medications:","Don’t require a physician’s prescription",["Must be prescribed","Are never harmful","Are illegal"],"Aspirin and Tylenol are examples."),
+T("Epinephrine textbook cautions include patients with:","Hypertension or a recent heart attack, though anaphylaxis may override",["Mild itching only","Low glucose","A sprained ankle"],"Always follow protocol and medical direction."),
+T("A patient says his inhaler isn’t prescribed to him. You should:","Not assist with it",["Give it anyway","Give two doses","Ask a neighbor"],"A non-prescribed inhaler is a contraindication.")
+]);
+TQ.mo=TQ.mo.concat([
+T("In the textbook, TACOS stands for:","Tobacco, Alcohol, Caffeine, Over-the-counter medications, Sexual and street drugs",["Time, Age, Color, Oxygen, Skin","Temperature, Airway, Circulation, Oxygen, SpO₂","Trauma, Allergies, Chief complaint, Onset, Symptoms"],"It helps you ask about factors that complicate the complaint."),
+T("A pandemic is:","A disease outbreak occurring on a global scale",["New cases above expected in one population","A local outbreak","A seasonal cold"],"An epidemic is cases substantially above expected."),
+T("An epidemic is:","New cases substantially exceeding what is expected in a population",["A global outbreak","A vaccine","An allergy"],"A pandemic is global."),
+T("For respiratory-spread disease you should wear:","Gloves, eye protection and a HEPA/N95 respirator, and mask the patient",["Gloves only","A paper gown only","Nothing"],"Place a surgical mask on the patient."),
+T("Which patients are most susceptible to flu complications?","Chronic illness, weak immune systems, the very young and the very old",["Healthy teens only","Athletes only","None"],"Annual immunization is important for EMS."),
+T("Early signs of hepatitis include:","Loss of appetite, vomiting, fever, fatigue and muscle or joint pain",["Chest pain only","Wheezing","Hives"],"Later signs include jaundice and right upper quadrant pain."),
+T("Toxin-induced hepatitis is:","Not contagious",["Highly contagious","Airborne","Spread by sneezing"],"There is no sure way to tell which hepatitis patients are contagious."),
+T("Which meningitis form is highly contagious?","Meningococcal",["All forms","None","Viral only"],"Most forms aren’t contagious; use standard precautions and report exposure."),
+T("The textbook says respiratory tuberculosis:","Is the only contagious form; N95/HEPA masks are required",["Spreads by blood","Is never contagious","Needs no mask"],"Droplet nuclei must be stopped."),
+T("Whooping cough mostly affects children younger than:","6 years",["12 years","16 years","30 years"],"It causes a “whoop” after coughing."),
+T("Herpes simplex carriers are mostly:","Asymptomatic (about 80%)",["Always symptomatic","Never infectious","Only children"],"Spread is by close personal contact."),
+T("Patients who need rapid transport include those who are:","Unconscious or altered, with airway or breathing problems, or with shock signs",["Alert with minor complaints","Stable with sprain","Refusing"],"These are priority signs."),
+T("For an unconscious medical patient, the secondary assessment is:","A full head-to-toe exam",["A focused exam only","None","Only vital signs"],"Conscious patients get a limited or detailed exam."),
+T("The medical assessment is focused on:","Nature of illness, symptoms and chief complaint",["Mechanism of injury only","Blood type","Insurance"],"Trauma focuses on mechanism of injury."),
+T("Apply oxygen to patients who are in shock, have difficulty breathing or have:","Low oxygen saturation",["Normal SpO₂ with no symptoms","A sprain","A rash"],"Follow your protocol."),
+T("The general destination choice for a medical patient is:","The closest appropriate hospital, unless a specialty center is needed",["The farthest","The patient’s choice always","A clinic"],"Match the facility to the patient’s needs."),
+T("MRSA in health care settings spreads mainly by:","Unwashed hands of providers",["Air","Water","Insects"],"Hand hygiene is key.")
+]);
+TQ.ne=TQ.ne.concat([
+T("Which part of the cerebrum controls sensation and movement?","The middle",["The front","The back","The base"],"The front controls emotion and thought; the back processes sight."),
+T("Each cerebral hemisphere controls:","The opposite side of the body",["The same side","Only speech","Only vision"],"This is why a left-brain stroke affects the right side."),
+T("In most people, speech is controlled on the:","Left side of the brain",["Right side","Cerebellum","Brain stem"],"Left hemisphere stroke often causes aphasia."),
+T("The foramen magnum is:","The opening at the skull base where the spinal cord exits",["A vessel","A nerve","A part of the cerebrum"],"Nerves exit through it."),
+T("The general rule for altered mental status is: if the cause is in the heart or lungs, the:","Entire brain is affected",["Part of the brain is affected","Only the cerebellum","Only the brain stem"],"A primary brain problem affects only part of the brain."),
+T("Ischemic strokes account for about:","More than 80% of strokes",["13%","50%","5%"],"Hemorrhagic strokes are about 13%."),
+T("A hemorrhagic stroke in an otherwise healthy young person is likely caused by a:","Berry aneurysm",["Plaque","Heart failure","Migraine"],"Surgical repair may be possible if care is sought immediately."),
+T("Difficulty understanding spoken words is:","Receptive aphasia",["Expressive aphasia","Dysarthria","Ataxia"],"Expressive aphasia is difficulty using the right words."),
+T("Slurred speech is called:","Dysarthria",["Aphasia","Neglect","Ataxia"],"Muscle control of speech is affected."),
+T("Lack of muscle coordination is:","Ataxia",["Aphasia","Dysarthria","Hemiparesis"],"It shows up as stumbling or loss of balance."),
+T("A right hemisphere stroke often causes:","Left-sided paralysis and neglect, with intact understanding",["Aphasia and right paralysis","No symptoms","Only headache"],"Patients may be oblivious to the problem."),
+T("A TIA can last up to:","24 hours, with no actual tissue death",["1 week","30 seconds only","3 days"],"Every TIA is an emergency and a warning."),
+T("Postictal state following a seizure typically lasts:","5 to 30 minutes",["30 seconds","3 hours","3 days"],"It is a gradual return to consciousness."),
+T("The generalized seizure rigidity-and-relaxation cycle usually lasts:","1 to 3 minutes",["10 seconds","10 minutes","30 minutes"],"Most seizures last 3 to 5 minutes."),
+T("An absence seizure was formerly called:","Petit mal",["Grand mal","Status","Aura"],"It lasts seconds with a brief memory lapse."),
+T("Seizures lasting more than 5 minutes are likely to progress to:","Status epilepticus",["TIA","Aura","Migraine"],"Treat as an emergency."),
+T("Simple partial seizures involve:","No change in level of consciousness",["Loss of consciousness","Always convulsions","Always aura"],"Complex partial seizures alter mental status."),
+T("Lip smacking, eye blinking and repetitive behavior suggest:","Complex partial seizure",["Simple partial","Absence only","TIA"],"They arise from the temporal lobe."),
+T("Which is an anticonvulsant?","Phenytoin (Dilantin) or levetiracetam (Keppra)",["Insulin","Albuterol","Aspirin"],"Also phenobarbital and carbamazepine."),
+T("A condition that can cause seizures through metabolic causes is:","Sudden withdrawal from heavy alcohol or sedative use",["Eating breakfast","Walking","Sleep"],"Also low glucose and poisons."),
+T("If a patient with bleeding in the brain has high blood pressure, that is:","Possibly the cause of the bleed or the body’s compensation",["Always meaningless","A sign of hypoglycemia","Normal"],"Rising BP is an important sign."),
+T("Tension headaches are usually described as:","Squeezing, dull, an ache",["Pounding","Sudden thunderclap","Burning"],"They are caused by muscle contractions and stress."),
+T("Sinus headaches come with:","Nasal congestion, cough or fever",["Aura only","Neck stiffness only","Hives"],"They do not need prehospital care.")
+]);
+TQ.gi=TQ.gi.concat([
+T("Which are solid organs?","Liver, spleen, pancreas, kidneys, ovaries",["Stomach, bowel, bladder","Gallbladder only","Colon only"],"Injury to a solid organ causes bleeding and shock."),
+T("Which are hollow organs?","Gallbladder, stomach, intestines, bladder",["Liver, spleen","Kidneys","Pancreas"],"A breach leaks contents into the abdomen."),
+T("The liver’s role includes:","Making bile, filtering toxins and storing glucose",["Making insulin","Producing urine","Pumping blood"],"The gallbladder stores bile."),
+T("The pancreas releases:","Amylase, bicarbonate and insulin",["Bile","Urine","Hemoglobin"],"It sits near the duodenum."),
+T("Which organ is part of the lymphatic system and filters blood?","The spleen",["The liver","The gallbladder","The bladder"],"It also produces antibodies and acts as a blood reservoir."),
+T("The kidneys:","Regulate acidity and blood pressure and rid the body of waste",["Make bile","Digest starch","Store glucose"],"Blood flow is high in the kidneys."),
+T("The parietal peritoneum is supplied by:","The same nerves as the skin of the abdomen, so pain is sharp and localized",["The autonomic system","No nerves","Cranial nerves"],"The visceral peritoneum produces referred pain."),
+T("The visceral peritoneum:","Covers the organs and is supplied by the autonomic nervous system",["Lines the abdominal wall","Is the skin","Is a muscle"],"It causes referred, poorly localized pain."),
+T("Protective mucus eroding so acid eats into the stomach lining is:","An ulcer",["Cirrhosis","Appendicitis","A hernia"],"It may lead to gastric bleeding."),
+T("Esophagitis involves:","Esophageal lining inflamed by infection or stomach acid",["A broken rib","Bladder infection","A pancreatic stone"],"Pain with swallowing and heartburn are typical."),
+T("A tear at the junction of the esophagus and stomach after forceful vomiting is:","Mallory-Weiss syndrome",["Esophagitis","Gastroenteritis","Varices"],"Vomiting is the principal symptom."),
+T("Gastroenteritis is mainly characterized by:","Diarrhea",["Chest pain","Hives","Stridor"],"It may be viral, bacterial or noninfectious."),
+T("Bright red blood during a bowel movement from swollen rectal vessels is:","Hemorrhoids",["Melena","Diverticulosis","Gallstones"],"Melena is black and tarry."),
+T("A hernia becomes an emergency when:","The mass is no longer reducible, painful, tender and discolored (strangulation)",["It is soft","It is painless and reducible","It is small"],"Strangulation is a serious emergency."),
+T("Acute kidney failure is:","A sudden decrease in kidney function that may be reversible",["Always permanent","A UTI","A hernia"],"Chronic failure is irreversible and progressive."),
+T("Chronic kidney failure eventually requires:","Dialysis or transplant",["Antibiotics","Oral glucose","Aspirin"],"Dialysis is the only definitive treatment."),
+T("The bladder is located:","Behind the pubic symphysis",["Under the liver","In the flank","Behind the heart"],"Urine leaves via the urethra."),
+T("A missed dialysis treatment can lead to:","Pulmonary edema",["Hypoglycemia","Appendicitis","Hives"],"Position sitting up if pulmonary edema; supine if shock."),
+T("In acute abdomen care you:","Can’t treat the cause; treat for shock and give comfort and low-flow oxygen if needed",["Give pain pills","Give food","Palpate deeply"],"Treat for shock even when obvious signs are not present."),
+T("A pale, sweating patient with tearing abdominal pain and different arm pressures suggests:","Abdominal aortic aneurysm",["Gastritis","Hernia","Gas"],"Check pulses in both arms."),
+T("Which organs are part of the gastrointestinal digestion process?","Stomach and small intestine, with the liver and pancreas helping",["Spleen and kidneys","Bladder and ureters","Ovaries"],"The stomach is the main digestive organ.")
+]);
+TQ.en=TQ.en.concat([
+T("Hormones are:","Chemical messengers produced by glands",["Blood cells","Digestive juices","Antibodies"],"Endocrine disorders are internal communication problems."),
+T("Islets of Langerhans contain alpha and beta cells; beta cells make:","Insulin",["Glucagon","Amylase","Bile"],"Alpha cells make glucagon."),
+T("Type 1 diabetes is:","An autoimmune destruction of pancreatic beta cells",["Insulin resistance","A thyroid disease","Caused by obesity"],"Patients can’t survive without insulin."),
+T("Type 2 diabetes is caused by:","Resistance to insulin at the cellular level",["No insulin ever","Autoimmune destruction","Low sodium"],"Exercise and diet can help."),
+T("DKA blood glucose is generally above:","400 mg/dL",["80 mg/dL","120 mg/dL","60 mg/dL"],"Ketones build up as fat is burned."),
+T("Hyperosmolar hyperglycemic nonketotic syndrome (HHNS) is most associated with:","Type 2 diabetes and severe dehydration",["Type 1 only","Sickle cell","Hemophilia"],"It causes drowsiness, seizures and very high glucose."),
+T("Normal nonfasting blood glucose in adults and children is about:","80 to 120 mg/dL",["20 to 40","200 to 300","400 to 500"],"Neonates should be above 70 mg/dL."),
+T("Which is a common reason for hypoglycemia in a diabetic?","Normal insulin dose without eating enough",["Too much sleep","Drinking water","Walking slowly"],"Illness or unusual activity also contribute."),
+T("An insulin pump:","Continuously measures glucose and delivers insulin, and can malfunction",["Is harmless always","Is only used for type 2","Never fails"],"Always ask whether the patient wears one."),
+T("A hypoglycemic patient who is conscious and can swallow should receive:","Glucose tablets, sugary juice or oral glucose gel per protocol",["IV glucagon by the EMT","Insulin","Nothing"],"IV glucose and glucagon are beyond EMT scope."),
+T("A hypoglycemic patient is unconscious and at risk of aspiration. The EMT should:","Manage the airway, give oxygen and request ALS",["Give oral glucose","Give juice","Give insulin"],"IV glucose or IM glucagon is beyond EMT scope."),
+T("Three forms of oral glucose are:","Gel, chewable tablets and liquid",["Spray, patch, shot","Inhaler, cream, gas","None"],"It is contraindicated if unconscious or unable to swallow."),
+T("Sickle cell disease is most common in people of:","African, Caribbean and South American ancestry",["Asian ancestry only","European ancestry only","No group"],"It’s an inherited disorder of red blood cells."),
+T("A vasoocclusive crisis causes:","Blockages leading to hypoxia, pain and organ damage",["Hives","Low glucose","Seizures only"],"Misshapen red cells clump and sludge."),
+T("A physical sign of sickle cell crisis can be:","Swelling of the fingers and toes, or priapism",["Hives","Wheezing only","Jaundice only"],"Ask if the patient has had a crisis before."),
+T("Hemophilia A is caused by a lack of:","Factor VIII",["Insulin","Hemoglobin","Platelets only"],"It mainly affects males."),
+T("Complications of hemophilia A include:","Joint problems and bleeding in the brain",["Hives","Seizures only","Low glucose"],"Treatment can lead to thrombosis."),
+T("Thrombophilia means:","Blood clots more easily than normal",["Bleeds easily","Low sugar","Weak bones"],"It can be inherited, from medication or from cancer."),
+T("Risk factors for DVT include:","Recent surgery, long travel, bedrest and joint replacement",["Running","Eating fruit","Cold weather"],"A DVT can travel to the lung as a pulmonary embolus."),
+T("Which blood component is essential for clot formation?","Platelets",["Plasma","Red cells","White cells"],"Plasma is the transport medium."),
+T("Which blood component contains hemoglobin?","Red blood cells",["Platelets","White cells","Plasma"],"Hemoglobin carries oxygen."),
+T("Care for hematologic disorders is mainly:","Supportive and symptomatic, with oxygen and transport",["Insulin","Antibiotics","Splinting"],"Use high-flow oxygen if breathing is inadequate or AMS.")
+]);
+TQ.im=TQ.im.concat([
+T("Chemicals released in an allergic reaction include:","Histamines and leukotrienes",["Insulin","Bile","Amylase"],"They cause swelling and bronchospasm."),
+T("Angioedema is:","Localized swelling",["Hives","Wheezing","Low blood pressure"],"Seen in lips, face and hands."),
+T("Wheezing is a:","High-pitched, whistling sound on expiration",["Harsh sound on inspiration","Crackling","Silence"],"Stridor is on inspiration."),
+T("Food reactions may take how long to appear?","More than 30 minutes in some cases",["Never","Only seconds","Only days"],"Injected drugs react faster."),
+T("Which common drugs trigger allergic reactions?","Penicillin and NSAIDs",["Water","Oxygen","Glucose"],"Reactions to injected medication can be immediate and severe."),
+T("Latex allergy concern is greatest for:","Health care providers; nitrile gloves are an alternative",["Children only","Lawyers","Pilots"],"Know which gloves you use."),
+T("Envenomation means:","An insect or animal injecting venom",["A food allergy","A viral infection","A burn"],"Reactions can be local or systemic."),
+T("Which insects can sting multiple times?","Wasps, hornets and fire ants",["Honeybees","None","Only bees"],"Honeybees leave the stinger and die."),
+T("To remove a honeybee stinger you should:","Scrape with a credit card edge; don’t use tweezers",["Squeeze with forceps","Pull with fingers","Leave it"],"Squeezing injects more venom."),
+T("After removing a stinger, position the site:","Below the heart, with ice or a cold pack",["Above the head","Hot water","In a tight wrap"],"Remove jewelry too."),
+T("Definitive treatment for anaphylactic shock is:","Epinephrine",["Oxygen alone","Antibiotics","Aspirin"],"Oxygen, positioning and warmth support it."),
+T("Do NOT give epinephrine to patients who:","Don’t meet criteria for anaphylaxis, such as no respiratory compromise or hypotension",["Have hives and wheezing","Have swollen lips and low BP","Are in shock"],"Follow protocol."),
+T("Reassess an unstable anaphylaxis patient about every:","5 minutes",["60 minutes","30 minutes","2 hours"],"Stable patients about every 15 minutes."),
+T("In shock from anaphylaxis, position the patient:","Supine",["High Fowler’s","Prone","Standing"],"For breathing difficulty without shock, high Fowler’s helps."),
+T("Documentation for an allergic reaction should include:","Signs and symptoms, why you chose care and the patient’s response",["Only the time","Nothing","Only the address"],"Be thorough."),
+T("A medical identification tag on a patient with allergies should be:","Looked for and noted",["Ignored","Removed","Broken"],"It can identify the allergen.")
+]);
+TQ.to=TQ.to.concat([
+T("A poison is:","Any substance whose chemical action can damage body structures or impair function",["Only a gas","Only a drug","Only a plant"],"A toxin is a poison produced by bacteria, animals or plants."),
+T("Substance abuse is:","Misuse of any substance to produce a desired effect",["A medication error","A vaccine","An allergy"],"An overdose is a toxic dose."),
+T("Which question should you ask about a poisoning?","What substance, when, how much, and the patient’s weight",["Their hobbies","Their income","Their favorite color"],"Take containers or vomit samples to the hospital."),
+T("The most important treatment for many poisonings is:","Diluting or physically removing the poison, and supporting the ABCs",["Giving food","Waiting","Induce vomiting"],"Definitive care is in the ED."),
+T("With a dry powder spill on skin you should:","Brush it off, then flood with water for 15–20 minutes and wash",["Flood without brushing","Wipe with a cloth only","Cover only"],"Remove contaminated clothing too."),
+T("Inhaled poison first step:","Move the patient to fresh air safely (and call HazMat if gas is suspected)",["Enter without protection","Wait","Give charcoal"],"Use SCBA; don’t become a victim."),
+T("About what percent of poisonings occur by mouth?","About 80%",["20%","5%","50%"],"Usually accidental in children and deliberate in adults."),
+T("Which is a contraindication for activated charcoal?","Ingestion of alkali, mineral acids, cyanide, iron, lithium or alcohols",["Aspirin overdose","Acetaminophen overdose","Plant ingestion"],"Also a decreased level of consciousness."),
+T("Activated charcoal side effects:","Constipation, black stools and possible vomiting",["Hives","Fever","Hypotension"],"If the patient vomits, the dose may need repeating."),
+T("Activated charcoal premixed bottles contain up to:","50 g",["5 g","500 g","1 g"],"Shake vigorously before use."),
+T("You need whose approval before giving charcoal?","Medical control",["The patient’s neighbor","Dispatch","No one"],"Record the time given."),
+T("An opiate is:","A natural, nonsynthetic opioid, such as morphine or codeine",["A synthetic stimulant","A sedative-hypnotic","A hallucinogen"],"Synthetic opioids include meperidine, hydromorphone, oxycodone, hydrocodone and methadone."),
+T("Naloxone should be given when the patient has:","Agonal respirations or apnea, after airway and ventilation support",["A mild headache","Hives","Chest pain"],"Place an airway and ventilate with a BVM first."),
+T("Barbiturates and benzodiazepines are:","Sedative-hypnotics (CNS depressants)",["Stimulants","Hallucinogens","Antidotes"],"Treat airway and ventilation."),
+T("Abused inhalants such as halogenated hydrocarbons can cause:","A fatal ventricular dysrhythmia, so avoid exertion and use a stretcher",["Hives","Low glucose","Fever"],"The heart becomes hypersensitive to adrenaline."),
+T("Hydrogen sulfide has a:","Rotten-egg odor",["Sweet odor","No odor ever","Garlic odor"],"Wait for HazMat to clear the scene."),
+T("Sympathomimetics such as cocaine and amphetamines cause:","Hypertension, tachycardia and dilated pupils",["Bradycardia","Pinpoint pupils","Hypotension"],"They are CNS stimulants."),
+T("The most potent form of cocaine is:","Smoked crack",["Oral","Skin patch","Injection never"],"It is absorbed quickly."),
+T("Bath salts are:","Synthetic cathinones similar to MDMA",["Opioids","Sedatives","Antihistamines"],"Effects may last up to 48 hours."),
+T("THC is the chemical in marijuana that:","Produces the high",["Cures pain","Is an antidote","Is a vitamin"],"It impairs short-term memory."),
+T("LSD is a classic:","Hallucinogen",["Sedative","Opioid","Antidote"],"Provide calm emotional support."),
+T("The anticholinergic mnemonic includes:","Hot, blind, dry, red and mad",["Wet and cold only","Slow and sleepy","Cold and clammy"],"Think dry skin, dilated pupils and fever."),
+T("DUMBELS and SLUDGEM describe:","Cholinergic (nerve agent, organophosphate) poisoning",["Opioid overdose","Hypoglycemia","Heat stroke"],"Includes diarrhea, urination, miosis, bradycardia, emesis, lacrimation, salivation."),
+T("The DuoDote auto-injector contains:","Atropine and pralidoxime",["Epinephrine","Naloxone","Glucagon"],"It treats nerve agent exposure."),
+T("The most important consideration with a nerve agent exposure is:","Avoiding exposure yourself; decontamination may take priority over transport",["Giving charcoal","Inducing vomiting","Waiting for family"],"HazMat provides decontamination."),
+T("Aspirin overdose may cause:","Nausea, vomiting, hyperventilation and ringing in the ears",["Wheezing","Hives only","Bradycardia only"],"Seizures are possible."),
+T("Methanol and ethylene glycol are:","More toxic than ethyl alcohol, causing blindness and renal failure",["Harmless","Less toxic","Stimulants"],"They cause severe tachypnea."),
+T("Botulism is the most severe form of:","Toxin food poisoning, with neurologic symptoms",["Allergy","Alcohol poisoning","Heat illness"],"Blurred vision, weakness and difficulty speaking and breathing."),
+T("Delirium tremens signs include:","Agitation, fever, sweating, tremors, hallucinations and seizures",["Hypothermia","Slow pulse","Low glucose"],"A serious alcohol withdrawal syndrome.")
+]);
+TQ.ps=TQ.ps.concat([
+T("In the textbook, how many people should help with a restraint?","Five: one for each extremity and one for the head",["One","Two","Ten"],"Appoint a team leader and have a plan."),
+T("Which restraint type is preferred?","Four-point restraints (both arms and both legs)",["Prone hogtie","One wrist","Handcuffs always"],"Use the least restrictive method that keeps everyone safe."),
+T("Restrained extremities should be reassessed and documented every:","5 minutes: pulse, motor and sensory function",["60 minutes","30 minutes","Never"],"Never leave a restrained patient unattended."),
+T("If possible, the provider caring for a restrained patient should be:","Of the same gender as the patient",["A stranger","Any one person","A child"],"Treat the patient with dignity."),
+T("Before physical restraint you should try:","Verbal de-escalation and asking family to help",["Immediate force","Ignoring him","Yelling"],"Be honest and straightforward."),
+T("Chemical (pharmacologic) restraint would require:","ALS support, requested early",["EMT alone","A family member","Nothing"],"Uncontrolled agitation can lead to sudden death."),
+T("An abnormal behavior pattern lasting a month or more is:","A matter of concern",["Always normal","Impossible","An emergency requiring restraint"],"Persistent patterns may signal illness."),
+T("Which is a common anxiety disorder?","Panic disorder, PTSD or OCD",["Appendicitis","Hemophilia","Asthma"],"They are among the most common mental disorders."),
+T("An organic disorder is caused by:","A physical disturbance of brain function, such as TBI, seizure, overdose or illness",["Only stress","Only diet","Only childhood"],"A functional disorder has no structural cause."),
+T("Schizophrenia is classed as a:","Functional disorder",["Organic disorder","Infection","Injury"],"Anxiety and depression are also functional."),
+T("Early on a behavioral call you should:","Assess the scene, know the exits, stay with the patient and have a plan",["Block the door","Argue","Leave the patient"],"Request law enforcement if dangerous."),
+T("When assessing for violence, the most telling factor is the patient’s:","Physical activity (tense muscles, pacing, clenched fists)",["Hair color","Age","Shoes"],"Also consider history, posture, vocal activity and scene."),
+T("The single most significant factor in suicide is:","Depression",["Hunger","Good sleep","A new job"],"People who threaten suicide may act."),
+T("Suicide warning signs include:","Hopelessness, avoiding the future and having a plan",["Cheerfulness","Planning a vacation","Good appetite"],"Take any suggestion seriously."),
+T("A suicidal patient may also be:","Homicidal",["Always calm","Always safe","Never dangerous"],"Consider scene safety."),
+T("PTSD occurs after:","Exposure to a traumatic event such as assault, accident, war or disaster",["A cold","A fall","A meal"],"It’s a lasting stress reaction."),
+T("Symptoms of excited delirium include:","Hyperactive irrational behavior, hallucinations, tachycardia, sweating and dilated pupils",["Slow pulse","Hypothermia","Drowsiness"],"Don’t use lights and siren; request ALS if agitation continues."),
+T("For an agitated patient in transport:","Transport by ground, without lights and siren if possible, to a facility with psychiatric services",["Use air transport always","Use sirens","Leave alone"],"Never let your guard down."),
+T("Reflective listening helps because it:","Shows interest and reduces stress",["Provokes","Ends the call","Is illegal"],"Express interest and avoid judging."),
+T("The textbook’s common myth about mental illness is that:","All people with mental illness are violent",["Medical causes can mimic it","Communication helps","Depression can be normal"],"Only a small percentage are dangerous.")
+]);
+TQ.re=[
+T("The diaphragm and chest wall muscles are part of the:","Respiratory system",["Digestive system","Nervous system only","Skeletal system only"],"They power breathing."),
+T("The upper airway is the structures above the:","Vocal cords",["Carina","Alveoli","Diaphragm"],"It includes nose, mouth, pharynx and larynx."),
+T("Gas exchange occurs in the:","Alveoli",["Bronchi","Trachea","Larynx"],"Oxygen enters capillaries and CO₂ returns to the lungs."),
+T("The brain stem regulates breathing by sensing blood levels of:","Carbon dioxide",["Glucose","Sodium","Calcium"],"It adjusts rate and depth."),
+T("Some COPD patients retain chronic carbon dioxide, so you should:","Use caution but never withhold oxygen from a hypoxic patient",["Withhold oxygen","Give none","Give only room air"],"Monitor and assist ventilation."),
+T("Croup causes:","Stridor and a seal-bark cough; humidified oxygen helps",["Wet lungs","Wheezing only","Hives"],"It is inflammation of the pharynx, larynx and trachea."),
+T("Epiglottitis is a:","Bacterial infection causing epiglottis swelling; the child is often tripod and drooling",["Viral cold","Allergy","Injury"],"Don’t place an airway or suction."),
+T("RSV mainly affects:","Young children",["Elderly only","Athletes","Pregnant women only"],"Watch for dehydration."),
+T("Bronchiolitis usually affects:","Newborns and toddlers",["Teens","Adults","Seniors only"],"Bioliolitis is a viral illness often caused by RSV."),
+T("Bacterial pneumonia typically comes on:","Quickly, with high fever",["Slowly with no fever","Never","Only in children"],"Viral pneumonia is more gradual."),
+T("Tuberculosis patients often complain of:","Fever, cough, fatigue, night sweats and weight loss",["Hives","Wheezing only","Chest trauma"],"Wear gloves, eye protection and an N-95 respirator."),
+T("Acute pulmonary edema is usually the result of:","Congestive heart failure",["Asthma","Trauma","Allergy"],"Fluid builds up in the alveoli."),
+T("Pulmonary edema produces which lung sounds?","“Wet” sounds",["“Dry” sounds","No sounds","Stridor only"],"COPD produces “dry” sounds."),
+T("The most common type of COPD is:","Emphysema",["Asthma","Croup","Bronchiolitis"],"Chronic bronchitis is related to tobacco smoke."),
+T("Asthma is most prevalent in children aged:","5 to 17",["0 to 2","30 to 40","70 to 80"],"It produces wheezing."),
+T("Asthma is an acute spasm of the:","Bronchioles",["Alveoli","Trachea","Larynx"],"Triggers include allergens, exercise and emotional distress."),
+T("Spontaneous pneumothorax occurs:","With lung infections or weak lungs; breath sounds may be absent on that side",["Only with trauma","Never in adults","With low glucose"],"The patient becomes dyspneic."),
+T("A pleural effusion is:","Fluid collecting outside the lung that compresses it",["Air in the pleura","A blood clot","A tumor"],"Upright position eases symptoms."),
+T("Signs of pulmonary embolism include:","Dyspnea, tachycardia, chest pain and hemoptysis",["Hives","Bradycardia only","Seizure"],"A clot circulates through the venous system."),
+T("Hyperventilation can be:","A sign of life-threatening illness, so rule out serious causes",["Always anxiety","Harmless","Always asthma"],"Body may compensate for acidosis."),
+T("Carbon monoxide is:","Odorless and highly poisonous",["Smelly","Harmless","Visible"],"It is produced by fuel-burning appliances and smoke."),
+T("PASTE is used for patients with:","Dyspnea",["Chest trauma","Seizure","Burns"],"Progression, associated chest pain, sputum, talking tiredness, exercise tolerance."),
+T("Common inhaler side effects include:","Increased pulse, nervousness and muscle tremors",["Hives","Low glucose","Bradycardia"],"Watch for side effects from overuse."),
+T("Which indicates COPD risk on assessment?","Over 50, history of lung problems, smoker, barrel chest, accessory muscle use",["Child with fever","Athlete","Pregnant woman"],"Look for tightness and fatigue."),
+T("For upper or lower airway infection you should:","Give humidified oxygen if available and avoid suctioning or airways in epiglottitis",["Insert an OPA","Suction deeply","Lay flat"],"Position comfortably and transport promptly."),
+T("A patient who was eating just before dyspnea should make you consider:","Foreign body airway obstruction",["Asthma only","Anemia","Heart block"],"Treat quickly.")
+];
+TQ.ca=[
+T("The aorta receives blood from the:","Left ventricle",["Right atrium","Left atrium","Right ventricle"],"The aorta is the body’s main artery."),
+T("Automaticity means:","Heart cells can contract spontaneously without a nerve stimulus",["The heart needs the brain","It can’t beat alone","It’s a drug"],"If the SA node fails, other cells can generate impulses."),
+T("The sympathetic nervous system is the:","Fight-or-flight system",["Rest-and-digest system","Digestive system","Immune system"],"The parasympathetic system slows functions."),
+T("Cardiac output equals:","Heart rate × stroke volume",["BP × age","Rate only","Volume only"],"It is the blood moved per minute."),
+T("Perfusion is:","The constant flow of oxygenated blood to the tissues",["The heart rate","Blood glucose","Breathing"],"If it fails, cells and the patient die."),
+T("Atherosclerosis is:","A buildup of calcium and cholesterol in the arteries",["A clot only","A torn valve","An infection"],"It can occlude arteries."),
+T("Controllable AMI risk factors include:","Smoking, hypertension, high cholesterol, diabetes, obesity and inactivity",["Age","Family history","Male gender"],"Uncontrollable ones include age, family history and being male."),
+T("Angina occurs when:","The heart’s oxygen need exceeds supply",["A cell dies","A valve fails","The lung collapses"],"It doesn’t usually cause permanent damage."),
+T("Stable angina is:","Relieved by rest or nitroglycerin",["Never relieved","A heart attack","Always fatal"],"Treat angina like an AMI."),
+T("Unstable angina occurs:","In response to fewer stimuli than normal",["Only at rest in a bed always","Never","Only with exercise"],"Take it seriously."),
+T("AMI pain differs from angina in that it:","Lasts 30 minutes to hours and isn’t always relieved by rest or nitroglycerin",["Lasts seconds","Always eases","Is mild"],"It may not be exertional."),
+T("Three serious consequences of AMI are:","Cardiac arrest, cardiogenic shock and congestive heart failure",["Asthma","Stroke only","Hives"],"Dysrhythmias are also possible."),
+T("Pink, frothy sputum suggests:","Pulmonary edema",["Asthma","Pneumonia","TB"],"It is associated with heart failure."),
+T("A hypertensive emergency is defined in the textbook as systolic pressure greater than:","180 mm Hg",["120","140","100"],"Symptoms include sudden severe headache and nosebleed."),
+T("A dissecting aortic aneurysm causes:","Very sudden chest pain and different BP in each arm",["Slow cough","Hives","Low glucose"],"The primary cause is uncontrolled hypertension."),
+T("The recommended aspirin dose in the textbook is:","162 to 324 mg (two to four 81-mg chewables)",["50 mg","1000 mg","10 mg"],"Chewable tablets work fastest."),
+T("Nitroglycerin is contraindicated if systolic BP is below:","100 mm Hg",["60","140","180"],"Also head injury or ED drugs within 24 hours."),
+T("Nitroglycerin cannot be given if the patient took erectile dysfunction drugs within:","24 hours",["1 hour","1 week","1 month"],"The combination can drop BP."),
+T("The usual maximum number of nitroglycerin doses is:","Three",["One","Ten","None"],"Follow protocol and medical direction."),
+T("Which does a pacemaker do?","Maintains a regular heart rate through wires to the myocardium",["Lowers BP","Delivers insulin","Thins blood"],"Malfunction can cause syncope and slow heart rate."),
+T("An AICD in a cardiac arrest patient:","Shocks as needed; its low electricity won’t harm rescuers",["Must be removed","Is dangerous to touch","Is a pacemaker only"],"Treat as any AMI."),
+T("An LVAD patient’s equipment should be:","Transported with all supplies and battery packs",["Left at home","Disconnected","Ignored"],"Ask family about the device."),
+T("The AED:","Analyzes rhythm and delivers a shock if ventricular fibrillation is found",["Gives drugs","Monitors BP","Treats asystole by shocking"],"Not all patients require a shock."),
+T("Before defibrillating you should:","Make sure no one is touching the patient and the patient is not in water or touching metal",["Touch the patient","Wet the chest","Skip checks"],"Remove a nitroglycerin patch and wipe the area."),
+T("The chain of survival begins with:","Early recognition and activation of EMS",["Hospital care","Drug therapy","Rehabilitation"],"Then bystander CPR, rapid defibrillation, EMS, ALS and post-arrest care."),
+T("After return of spontaneous circulation, ventilate at:","10 to 12 breaths per minute and keep SpO₂ 95–99%",["30 per minute","2 per minute","Do nothing"],"Monitor and transport immediately if ALS isn’t en route."),
+T("Asystole is:","Absence of all electrical activity; nearly all patients die",["A shockable rhythm","Fast rhythm","Normal rhythm"],"Not shocked by an AED."),
+T("If cardiac arrest occurs during transport you should:","Stop the vehicle, begin CPR or analyze with the AED and call ALS",["Keep driving","Wait for arrival","Skip CPR"],"Continue per local protocol.")
+];
+REF.push(
+["Textbook: key numbers and wording",`<ul><li><b>Aspirin:</b> 162–324 mg (two to four 81-mg chewables). <b>Nitroglycerin:</b> avoid SBP &lt;100, head injury, ED drugs within 24 hours, or max prescribed doses (usually 3); wait 5 minutes between doses; one spray = one tablet.</li>
+<li><b>Normal nonfasting glucose</b> 80–120 mg/dL (neonates above 70); DKA usually above 400. <b>Epinephrine:</b> adult 0.3 mg, child 0.15 mg.</li>
+<li><b>Postictal state</b> 5–30 minutes; seizures over 5 minutes may become status epilepticus (also over 30 minutes or repeated without recovery). Ischemic strokes &gt;80%, hemorrhagic about 13%.</li>
+<li><b>Activated charcoal:</b> 1 g/kg, premixed bottles up to 50 g; not for alkalis, mineral acids, cyanide, iron, lithium, alcohols or decreased LOC. Dry chemicals: brush off, flood 15–20 minutes.</li>
+<li><b>Restraint:</b> five people (one per limb plus head); four-point restraints; reassess pulse, motor and sensory every 5 minutes; same-gender provider if possible.</li>
+<li><b>TACOS:</b> Tobacco, Alcohol, Caffeine, OTC/herbal, Sexual and street drugs. Reassess unstable patients every 5 minutes, stable every 15.</li></ul>`],
+["Textbook: Respiratory emergencies (Ch 15)",`<ul><li>Upper airway above the vocal cords; alveoli exchange O₂ and CO₂; the brain stem senses CO₂.</li>
+<li><b>Croup:</b> stridor, seal-bark cough, humidified oxygen. <b>Epiglottitis:</b> bacterial, tripod and drooling, no airway adjuncts or suction. <b>RSV and bronchiolitis:</b> young children. <b>Pneumonia:</b> bacterial acute with high fever, viral gradual. <b>Pertussis:</b> under 6, “whoop.” <b>TB:</b> N-95.</li>
+<li><b>Pulmonary edema:</b> from CHF, “wet” sounds, sit upright, CPAP. <b>COPD:</b> “dry” sounds, emphysema most common. <b>Asthma:</b> bronchiole spasm, ages 5–17. <b>Spontaneous pneumothorax:</b> absent sounds on one side. <b>Pleural effusion:</b> fluid outside the lung. <b>PE:</b> dyspnea, tachycardia, chest pain, hemoptysis. <b>Hyperventilation:</b> rule out serious causes.</li>
+<li>PASTE for dyspnea. Oxygen via nonrebreather at 15 L/min; assist with the patient’s own prescribed inhaler (no inhaler not prescribed to the patient, expired, or over maximum dose).</li></ul>`],
+["Textbook: Cardiovascular emergencies (Ch 16)",`<ul><li>Heart anatomy: aorta from the left ventricle; automaticity; sympathetic (fight-or-flight) vs parasympathetic. Cardiac output = rate × stroke volume.</li>
+<li><b>ACS:</b> angina (oxygen need exceeds supply; stable relieved by rest/nitroglycerin) and AMI (cell death; 30 minutes to hours; not reliably relieved). Consequences: cardiac arrest, cardiogenic shock, CHF. Hypertensive emergency: SBP over 180. Aortic dissection: sudden pain, different arm pressures.</li>
+<li>Devices: pacemaker, AICD, external defibrillator vest, LVAD (bring batteries). AED: analyze, clear, shock, resume CPR; not in water or touching metal; remove nitroglycerin patch. After ROSC: 10–12 breaths/min, SpO₂ 95–99%.</li></ul>`]
+);
+FC.push(
+["Pharmacodynamics","How a medication works on the body"],
+["Agonist vs antagonist","Agonist stimulates receptors; antagonist blocks them"],
+["Enteral vs parenteral","Enteral: through the digestive system. Parenteral: other routes"],
+["Six rights","Patient, medication, dose, route, time, documentation"],
+["Nitroglycerin contraindications (textbook)","SBP <100, head injury, ED drugs within 24 hours, max doses reached"],
+["Nitroglycerin repeat interval","Wait 5 minutes; one spray equals one tablet"],
+["Aspirin dose (textbook)","162–324 mg: two to four 81-mg chewables"],
+["TACOS","Tobacco, Alcohol, Caffeine, OTC/herbal, Sexual and street drugs"],
+["Epidemic vs pandemic","Epidemic: cases exceed expected. Pandemic: global outbreak"],
+["Postictal state duration","About 5–30 minutes"],
+["Ischemic vs hemorrhagic stroke share","Ischemic over 80%; hemorrhagic about 13%"],
+["Expressive vs receptive aphasia","Expressive: trouble using words. Receptive: trouble understanding"],
+["Dysarthria","Slurred speech"],
+["Ataxia","Lack of muscle coordination"],
+["Absence seizure","Formerly petit mal; seconds; brief memory lapse"],
+["Solid vs hollow organs","Solid bleed (liver, spleen, pancreas, kidneys, ovaries); hollow leak (gallbladder, stomach, intestines, bladder)"],
+["Parietal vs visceral peritoneum","Parietal: sharp, localized. Visceral: autonomic, referred pain"],
+["Mallory-Weiss syndrome","Tear at the esophagus–stomach junction from vomiting"],
+["Strangulated hernia","No longer reducible, painful, tender, discolored; emergency"],
+["Normal nonfasting glucose","80–120 mg/dL; neonates above 70"],
+["DKA glucose","Usually above 400 mg/dL"],
+["HHNS","Hyperosmolar nonketotic state in type 2 diabetes; severe dehydration"],
+["Hemophilia A","Missing factor VIII; mostly males"],
+["Thrombophilia","Blood clots more easily than normal"],
+["Honeybee vs wasp","Honeybee leaves stinger; wasps and hornets sting repeatedly"],
+["Stinger removal","Scrape with a credit card edge; no tweezers"],
+["Anaphylaxis epinephrine rule","Give for respiratory compromise or hypotension"],
+["Poison vs toxin","Poison: damaging substance. Toxin: poison made by bacteria, animals or plants"],
+["Charcoal not for","Alkalis, mineral acids, cyanide, iron, lithium, alcohols, decreased LOC"],
+["Opioid vs opiate","Opiate: natural opioid (morphine, codeine)"],
+["Naloxone timing","When respirations are agonal or absent, after ventilation support"],
+["Cholinergic mnemonic","DUMBELS or SLUDGEM"],
+["DuoDote","Atropine and pralidoxime auto-injector"],
+["Anticholinergic mnemonic","Hot, blind, dry, red and mad"],
+["Restraint staffing (textbook)","Five people: one per limb and one for the head"],
+["Restraint reassessment","Every 5 minutes: pulse, motor and sensory"],
+["Single biggest suicide factor","Depression"],
+["Violence cues","Tense muscles, clenched fists, pacing, protecting personal space"],
+["Excited delirium signs","Hyperactive irrational behavior, hallucinations, tachycardia, sweating"],
+["Upper airway boundary","Structures above the vocal cords"],
+["Croup","Stridor and seal-bark cough; humidified oxygen"],
+["Epiglottitis","Tripod and drooling; avoid airway adjuncts and suction"],
+["Pulmonary edema vs COPD sounds","Edema: “wet.” COPD: “dry”"],
+["PASTE","Progression, associated chest pain, sputum, talking tiredness, exercise tolerance"],
+["Pulmonary embolism signs","Dyspnea, tachycardia, chest pain, hemoptysis"],
+["Cardiac output","Heart rate × stroke volume"],
+["Angina vs AMI","Angina: relieved by rest or nitroglycerin. AMI: 30 minutes or more, not reliably relieved"],
+["Hypertensive emergency","Systolic over 180 mm Hg"],
+["After ROSC","Ventilate 10–12 per minute; SpO₂ 95–99%"],
+["AED safety","Not in water or touching metal; remove nitroglycerin patch; clear everyone"]
+);
+
+REF.push(
+["Workbook: Pharmacology principles",`<ul><li><b>Names:</b> trade (brand), generic, chemical. <b>Action</b> = expected effect; <b>indication</b> = reason to give; <b>contraindication</b> = reason not to; <b>side effect</b> = unwanted effect.</li>
+<li><b>Absorption</b> moves drug into the blood; <b>adsorption</b> binds it to a surface (charcoal). Fastest route: IV. Forms: tablets, capsules, solutions, suspensions (shake), gels, gases, inhaled, topical.</li>
+<li><b>Oxygen:</b> nasal cannula 1–6 L/min; nonrebreather 10–15 L/min up to about 90%.</li>
+<li><b>Medication rights:</b> patient, medication, dose, route, time, documentation. Check the expiration date and get medical direction per protocol.</li>
+<li>Epinephrine: bronchodilation, vasoconstriction, higher heart rate and BP. Nitroglycerin: vasodilation, may cause headache and low BP. Oral glucose: alert patients only.</li></ul>`],
+["Workbook: Medical overview and infection control",`<ul><li>Scene safety is the most important part of size-up. Assess nature of illness, number of patients and resources. Keep a high <b>index of suspicion</b>.</li>
+<li>Use <b>SAMPLE</b> and <b>OPQRST</b>. For an unresponsive patient, look for medical alert tags, medication bottles and ask family. Reassess unstable patients about every 5 minutes, stable about every 15.</li>
+<li><b>HIV</b>: blood and body fluids, no vaccine. <b>Hepatitis A</b>: fecal-oral, vaccine. <b>Hepatitis B</b>: blood, vaccine. <b>Hepatitis C</b>: no vaccine. <b>TB</b>: airborne, use N95/HEPA. <b>MRSA</b>: contact. <b>Meningitis</b>: fever, headache, stiff neck, AMS. <b>Pertussis</b>: bacterial, airborne.</li></ul>`],
+["Workbook: Neurologic emergencies",`<ul><li>Brain: cerebrum (thinking, voluntary movement), cerebellum (coordination), brain stem (breathing, BP, swallowing, pupils). 12 cranial nerves, 31 spinal nerve pairs.</li>
+<li><b>Stroke:</b> ischemic (blockage; thrombus or embolus; most common) vs hemorrhagic (bleeding; hypertension, aneurysm). <b>TIA</b>: resolves within 24 hours and warns of stroke. Aphasia = speech loss; hemiparesis = one-sided weakness. Hypoglycemia, postictal state and subdural bleeding can mimic stroke.</li>
+<li><b>Seizures:</b> generalized (tonic-clonic), partial (simple or complex partial), febrile, status epilepticus (more than 30 minutes or repeated without recovery). Postictal state follows; it lasts well over 5 minutes.</li>
+<li>Headaches: tension (most common), migraine (second; light and sound sensitivity), sinus. Several people with headaches suggests CO. Subarachnoid hemorrhage: sudden worst headache. Rising ICP: headache, vomiting, AMS, seizures.</li>
+<li>Care: ABCs, oxygen, glucose check, Cincinnati scale, note onset time, rapid transport to a stroke center, no food or drink.</li></ul>`],
+["Workbook: GI and urologic emergencies",`<ul><li><b>Peritonitis</b> = inflamed peritoneum. Visceral pain is dull and vague; parietal pain is sharp and localized. <b>Referred pain</b> is felt away from the source. Guarding and rigidity suggest peritonitis. <b>Ileus</b> = paralyzed bowel with distention.</li>
+<li><b>Appendicitis:</b> umbilical pain moving to right lower quadrant. <b>Kidney stone:</b> flank pain to the groin, restless. <b>Cystitis:</b> suprapubic pain, frequent urination. <b>Diverticulitis:</b> infected colon pouches. <b>Hemorrhoids:</b> pregnancy, straining. <b>Varices:</b> portal hypertension, bleed massively. <b>AAA:</b> tearing pain, pulsatile mass. <b>Pancreatitis:</b> alcohol, gallstones.</li>
+<li>Palpate away from the pain first. Ask about last menstrual period in women of childbearing age. Position of comfort, nothing by mouth, oxygen if hypoxic. Dialysis: missed treatment risks hyperkalemia; check access site for bleeding.</li></ul>`],
+["Workbook: Endocrine and hematologic emergencies",`<ul><li>Insulin (pancreas) moves glucose into cells; the brain doesn’t need insulin to use glucose. Normal glucose about 80–120 mg/dL in many EMT texts. Polyuria, polydipsia, polyphagia are classic high-glucose signs.</li>
+<li><b>Hypoglycemia (insulin shock):</b> rapid onset, pale cool clammy, confused, combative or seizure. Oral glucose if alert and able to swallow. <b>DKA:</b> gradual, dehydration, fruity breath, Kussmaul respirations.</li>
+<li><b>Sickle cell:</b> crescent red cells block vessels; painful crisis; oxygen, fluids per protocol, keep warm. <b>Hemophilia:</b> clotting factor missing; direct pressure and transport. <b>DVT:</b> clot in deep vein; can become pulmonary embolism.</li></ul>`],
+["Workbook: Immunologic emergencies",`<ul><li>Allergic reaction = immune response to a foreign substance; <b>anaphylaxis</b> is the severe whole-body form. Triggers: foods, medications, stings, plants, chemicals.</li>
+<li>Signs: hives, itching, swelling, wheezing, <b>stridor</b>, throat tightness, hypotension, rapid pulse, nausea and cramps. <b>Epinephrine:</b> adult auto-injector 0.3 mg, pediatric 0.15 mg, lateral thigh; massage site afterward; watch for tachycardia, anxiety, tremor, pallor.</li>
+<li>Honeybee stinger is barbed: scrape it off. Reassess frequently; relapse can happen.</li></ul>`],
+["Workbook: Toxicology",`<ul><li>Routes: ingestion (about 80%), inhalation, absorption, injection. Support ABCs, identify the substance, contact poison control, don’t induce vomiting.</li>
+<li><b>Activated charcoal</b> (suspension, adsorbs, about 1 g/kg, adult 25–50 g): alert patients only; side effects vomiting and black stool.</li>
+<li><b>Opioids:</b> pinpoint pupils, slow breathing; naloxone. <b>Sedative-hypnotics:</b> benzodiazepines, barbiturates. <b>Stimulants:</b> cocaine, amphetamines. <b>Alcohol:</b> CNS depressant; withdrawal can cause DTs and seizures. <b>Cholinergic:</b> organophosphates, nerve agents. <b>Aspirin:</b> tinnitus.</li>
+<li>Eyes: irrigate at least 15 minutes. Dry chemicals: brush off then flush. Phosphorus and elemental sodium react with water.</li></ul>`],
+["Workbook: Psychiatric emergencies",`<ul><li>Rule out medical causes (hypoxia, low glucose, infection, head injury). Scene safety first; police for violent patients. Stay calm, keep distance, explain actions, don’t argue with delusions.</li>
+<li><b>Suicide:</b> ask directly. Risk factors: prior attempt, depression, substance abuse, firearms, recent loss.</li>
+<li><b>Restraint:</b> only when needed with medical direction or police; five people (one per limb plus the head), supine never prone, reassess pulse, motor and sensory every 5 minutes, reassess airway and circulation frequently, document the reasons. Implied consent when patient lacks competence.</li>
+<li>Alzheimer’s is the most common dementia; delirium is acute and often reversible.</li></ul>`]
+);
+FC.push(
+["Trade vs generic name","Trade: manufacturer’s brand. Generic: nonproprietary drug name"],
+["Absorption vs adsorption","Absorption: moves into the blood. Adsorption: binds to a surface (charcoal)"],
+["Nonrebreather flow rate","10–15 L/min; up to about 90% oxygen"],
+["Medication rights","Patient, medication, dose, route, time, documentation"],
+["Index of suspicion","Awareness of possible serious hidden injury or illness"],
+["SAMPLE","Signs/symptoms, Allergies, Medications, Past history, Last oral intake, Events"],
+["OPQRST","Onset, Provocation, Quality, Radiation, Severity, Time"],
+["Hepatitis vaccine availability","Vaccines for A and B; none for C"],
+["TB precautions","Airborne; N95 or HEPA respirator"],
+["MRSA transmission","Contact, often unwashed hands"],
+["Cerebellum","Coordination of movement"],
+["Brain stem","Breathing, BP, swallowing, pupil constriction"],
+["TIA","Stroke symptoms that resolve in less than 24 hours"],
+["Aphasia vs hemiparesis","Aphasia: speech loss. Hemiparesis: one-sided weakness"],
+["Ischemic vs hemorrhagic stroke","Ischemic: blockage (most common). Hemorrhagic: bleeding"],
+["Postictal state","Recovery period after a seizure; confusion, labored breathing"],
+["Status epilepticus","Seizure over 30 minutes or repeated seizures without recovery"],
+["Complex partial seizure","Temporal lobe origin; altered awareness"],
+["Tension vs migraine headache","Tension is most common; migraine is second, with light and sound sensitivity"],
+["Peritonitis","Inflammation of the peritoneum; rigid, tender abdomen"],
+["Referred pain","Pain felt away from its source"],
+["Guarding","Rigid abdominal muscles protecting against pain"],
+["Ileus","Paralysis of the bowel with distention"],
+["Appendicitis pain pattern","Umbilical, then right lower quadrant"],
+["Kidney stone pain","Flank to groin; restless patient"],
+["Cystitis","Bladder infection; suprapubic pain, frequent urination"],
+["Diverticulitis","Infected colon pouches"],
+["Esophageal varices","Swollen veins from portal hypertension; bleed massively"],
+["AAA","Abdominal aortic aneurysm; tearing pain, pulsatile mass"],
+["Uremia","Waste buildup from kidney failure"],
+["Polyuria, polydipsia, polyphagia","Excess urination, thirst, eating"],
+["Insulin shock vs diabetic coma","Insulin shock: low glucose, rapid. Diabetic coma (DKA): high glucose, slow"],
+["Oral glucose contraindication","Unresponsive or unable to swallow"],
+["Sickle cell crisis","Crescent cells block vessels; pain; oxygen and comfort"],
+["Hemophilia","Missing clotting factor; direct pressure and transport"],
+["DVT","Clot in a deep vein; can become pulmonary embolism"],
+["Adult epinephrine auto-injector","0.3 mg"],
+["Pediatric epinephrine auto-injector","0.15 mg"],
+["Stridor vs wheezing","Stridor: upper airway, inspiratory. Wheezing: lower airway bronchospasm"],
+["Urticaria","Hives; itchy raised areas"],
+["Activated charcoal dose","About 1 g/kg; adult 25–50 g"],
+["Charcoal contraindication","Altered mental status or unable to swallow"],
+["Eye chemical irrigation","At least 15 minutes, nose side outward"],
+["Opioid sign","Pinpoint pupils, slow breathing"],
+["Cholinergic poisons","Nerve agents, organophosphates, some mushrooms"],
+["Tinnitus overdose","Aspirin (salicylates)"],
+["Alcohol withdrawal danger","Delirium tremens and seizures"],
+["Behavioral emergency","Abnormal behavior that threatens patient or others"],
+["Organic vs functional disorder","Organic: physical cause. Functional: no known physical cause"],
+["Restraint position","Supine, never prone; five people (one per limb and one for the head)"],
+["Alzheimer’s disease","Most common cause of dementia"],
+["Delirium vs dementia","Delirium: acute, reversible. Dementia: gradual, progressive"]
+);
+
+var $=function(i){return document.getElementById(i)};
+var tabs=[["ref","Reference"],["cards","Flashcards"],["quiz","Quiz"],["bank","Question bank"],["new","What’s new"]];
+tabs.forEach(function(t,i){var b=document.createElement("button");b.textContent=t[1];b.setAttribute("role","tab");b.setAttribute("aria-selected",i==0);b.onclick=function(){show(t[0])};b.dataset.t=t[0];$("tabs").appendChild(b)});
+function show(id){tabs.forEach(function(t){$(t[0]).hidden=t[0]!=id});[].forEach.call($("tabs").children,function(b){b.setAttribute("aria-selected",b.dataset.t==id)});window.scrollTo(0,0)}
+$("ref").innerHTML=REF.map(function(r){return"<details><summary>"+r[0]+"</summary><div>"+r[1]+"</div></details>"}).join("")+'<p class="meta">Highlighted text marks high-yield exam points.</p>';
+var deck=FC.slice(),ci=0,flipped=false;
+function drawCard(){var c=deck[ci];$("cards").innerHTML='<div class="card fc'+(flipped?" back":"")+'" tabindex="0" role="button" id="fc">'+(flipped?c[1]:c[0])+'</div><div class="row"><button class="btn" id="pv">Previous</button><span class="meta">'+(ci+1)+' / '+deck.length+(flipped?" · answer":" · tap to flip")+'</span><button class="btn p" id="nx">Next</button></div><div class="row"><button class="btn" id="sh">Shuffle</button></div>';
+$("fc").onclick=function(){flipped=!flipped;drawCard()};$("fc").onkeydown=function(e){if(e.key=="Enter"||e.key==" "){e.preventDefault();flipped=!flipped;drawCard()}};
+$("nx").onclick=function(){ci=(ci+1)%deck.length;flipped=false;drawCard()};$("pv").onclick=function(){ci=(ci-1+deck.length)%deck.length;flipped=false;drawCard()};
+$("sh").onclick=function(){deck.sort(function(){return Math.random()-.5});ci=0;flipped=false;drawCard()}}
+drawCard();
+var qs,qi,sc,ans,CUR=null;
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var QN=25;
+var S=[
+["A patient with type 1 diabetes is sweaty, pale, confused and combative. Alert enough to swallow. First step after ABCs?",["Give oral glucose","Give insulin","Wait","Give oxygen only"],0,"Treat suspected hypoglycemia with oral glucose if the patient can swallow and protect the airway."],
+["A diabetic has warm, dry skin, fruity breath and deep, rapid breathing. Next step:",["Oral glucose","ABCs, oxygen, transport and ALS","Insulin","Observe"],1,"This is DKA and needs hospital treatment."],
+["A patient\u2019s face droops on one side and the right arm drifts down. Best action:",["Check glucose, note last-known-well time and transport to a stroke center","Wait to see if it passes","Give aspirin","Sit him up and observe"],0,"Time is critical for stroke."],
+["A patient is seizing. What do you do first?",["Hold him down","Clear the area and protect his head","Put something in his mouth","Pour water on him"],1,"Protect from injury; don\u2019t restrain or put objects in the mouth."],
+["The seizure has stopped; the patient is breathing but unresponsive. Next step:",["Recovery position, suction ready, check glucose","Restrain","Oral glucose","Sit upright"],0,"Protect the airway during the postictal phase."],
+["A patient with hives, wheezing and swelling lips after a peanut. Best first treatment:",["Antihistamine","Epinephrine IM","Observe","Cold pack"],1,"Epinephrine is first-line for anaphylaxis."],
+["After stinging, a patient has only a local welt and has no breathing problem. Best care:",["Epinephrine","Scrape the stinger, wash, ice and monitor","Tourniquet","Oral glucose"],1,"Treat locally and watch for progression."],
+["A patient vomits coffee-ground material and is pale with a fast pulse. Next:",["Oral fluids","Treat for shock and transport","Give aspirin","Observe"],1,"This suggests GI bleeding with shock."],
+["A dialysis patient missed treatment, is weak and has an irregular pulse. Concern:",["Electrolyte imbalance causing dysrhythmia","Hypoglycemia","Stroke","Appendicitis"],0,"Missed dialysis can cause hyperkalemia."],
+["A hiker is confused, shivering stopped, skin cold. First priority:",["Rub the limbs","Handle gently, remove wet clothes and insulate","Hot drink","Hot bath"],1,"Prevent heat loss and avoid rough handling."],
+["A runner is hot, confused and not sweating. Next:",["Cool rapidly and transport","Rest","Salt tablets","Observe"],0,"Heat stroke is life-threatening."],
+["A pulled-out drowning victim is unresponsive, not breathing, with a pulse. Next:",["Ventilate immediately","Compressions","Suction","History"],0,"Ventilation is the priority."],
+["A 4-year-old has a barking cough and stridor but is alert and breathing comfortably. Best:",["Throat swab","Keep calm, oxygen as needed and transport","Lay flat","Give fluids"],1,"Avoid agitating a child with possible croup."],
+["A drooling child sits in a tripod position and looks very ill. You should:",["Look in the throat","Keep calm, give oxygen, transport and avoid examining the mouth","Give a drink","Lay flat"],1,"Suspect epiglottitis; don\u2019t provoke airway closure."],
+["A 58-year-old has chest pressure, sweating and nausea. Not allergic to aspirin. Next:",["Give aspirin, oxygen if SpO₂ <94%, transport","Wait","Give insulin","Walk him in"],0,"Treat suspected ACS."],
+["A patient with chest pain took erectile-dysfunction medicine today and has low BP. Nitroglycerin:",["Give it","Withhold and contact medical direction","Give double","Ignore it"],1,"Combination can cause dangerous hypotension."],
+["An unresponsive patient has slow shallow breathing and pinpoint pupils. Next:",["Ventilate, give naloxone per protocol, transport","Observe","Oral glucose","Aspirin"],0,"Opioid overdose needs ventilation and naloxone."],
+["A choking adult is conscious and cannot cough. Per 2025 AHA, you:",["Give abdominal thrusts only","Alternate 5 back blows with 5 abdominal thrusts","Give back blows only","Finger sweep"],1,"This is the updated sequence."],
+["A patient with schizophrenia says the radio is talking to him. Best approach:",["Argue the radio isn\u2019t real","Be calm, direct and keep distance","Go along with it","Touch his shoulder to reassure him"],1,"Don\u2019t challenge or play along with delusions."],
+["A child has circular burns on both hands and the story keeps changing. Action:",["Treat injuries and report suspicion per protocol","Ignore","Confront parents","Leave"],0,"Glove-pattern burns and inconsistent stories are red flags."],
+["A suicidal patient is on a window ledge. First concern:",["Scene safety and calm communication","Physical grab","Wait silently","Leave"],0,"Assess hazards and call for appropriate resources."],
+["A patient with COPD is severely hypoxic. You should:",["Withhold oxygen","Give oxygen and assist ventilation as needed","Lay flat","Give albuterol only"],1,"Never withhold oxygen from a hypoxic patient."],
+["A patient with CHF has crackles, JVD and pink frothy sputum. Position:",["Flat","Sitting upright","Left lateral","Prone"],1,"Sitting upright eases breathing."],
+["Before assisting a patient with his own prescribed albuterol inhaler, you should confirm:",["Only that he feels short of breath","Right patient, medication, dose, expiration, and get medical direction per protocol","Nothing; just assist","That he has insurance"],1,"Verify the medication details and follow your protocol for authorization."],
+["You use an adult epinephrine auto-injector for anaphylaxis. Best site:",["Upper arm only","Outer mid-thigh","Abdomen","Buttock"],1,"The lateral thigh gives rapid absorption and can go through clothing."],
+["A chest pain patient has BP 88/54 and is cool and clammy. Regarding nitroglycerin:",["Give it","Withhold it; give oxygen if needed and transport rapidly","Give double","Give it under the tongue after aspirin"],1,"Nitroglycerin can drop BP further; this looks like cardiogenic shock."],
+["A hypoglycemic patient is unresponsive. Oral glucose should be:",["Placed in the cheek","Withheld; manage the airway and call ALS","Given with water","Given slowly"],1,"Never give oral glucose to a patient who can\u2019t protect the airway."],
+["A patient with chest pain says she is allergic to aspirin. You should:",["Give it anyway","Withhold aspirin and continue care and transport","Give half","Give ibuprofen"],1,"Respect the allergy."],
+["An anxious patient has tingling hands, rapid breathing and SpO\u2082 99%. First consider:",["It\u2019s always anxiety","Rule out serious causes, then calm and coach breathing","Paper bag breathing","Leave her"],1,"Hyperventilation can mimic or hide serious illness."],
+["A tall, thin young man has sudden one-sided chest pain and decreased breath sounds on the left. Next:",["Give nitroglycerin","Oxygen, position of comfort, monitor and transport","Observe at home","Give aspirin"],1,"Suspect spontaneous pneumothorax."],
+["A woman 5 days post-surgery has sudden dyspnea and pleuritic chest pain. Next:",["Reassure her","Oxygen, transport rapidly and suspect pulmonary embolism","Give albuterol only","Have her walk"],1,"Recent immobility is a PE risk."],
+["CPAP would be inappropriate for a patient who:",["Is alert with pulmonary edema","Is vomiting or can\u2019t protect the airway","Is sitting upright","Is tachypneic"],1,"CPAP needs an alert patient who can protect the airway."],
+["A man collapses, is pulseless and not breathing. Next:",["Wait for ALS","Begin CPR and apply the AED","Check glucose","Obtain history"],1,"Start CPR and defibrillate as soon as possible."],
+["The AED says shock advised. After making sure everyone is clear:",["Press the shock button, then resume CPR immediately","Wait 2 minutes","Reanalyze","Remove pads"],0,"Deliver the shock and restart compressions right away."],
+["An elderly man faints on standing and wakes quickly. Next:",["Let him sit","Keep supine, assess ABCs, check glucose and transport","Release him","Give aspirin"],1,"Syncope needs evaluation for serious causes."],
+["A patient has sudden tearing chest pain radiating to the back and unequal arm pressures. Next:",["Give nitroglycerin","Oxygen, gentle handling and rapid transport","Walk him","Observe"],1,"Suspect aortic dissection; avoid delay."],
+["A patient\u2019s facial droop resolved after 10 minutes. You should:",["Cancel transport","Still transport and evaluate for TIA","Give aspirin only","Reassure and leave"],1,"A TIA is a warning for stroke."],
+["A child has a febrile seizure that stops; she is hot. Next:",["Immerse in ice water","Protect airway, loosen clothing and transport","Give water","Leave her"],1,"Cool gently; never use ice baths."],
+["A patient seizes for more than 5 minutes without waking. You should:",["Observe","Protect, give oxygen, suction ready, request ALS and transport","Restrain","Give oral glucose"],1,"Prolonged seizure is an emergency."],
+["A patient has the worst headache of her life with vomiting and neck stiffness. Next:",["Give painkillers","Oxygen, gentle handling and rapid transport","Observe","Have her drive"],1,"Possible subarachnoid hemorrhage."],
+["A restless patient has severe flank pain radiating to the groin. Best care:",["Give fluids by mouth","Position of comfort, oxygen as needed and transport","Walk him","Apply heat only"],1,"Typical of kidney stones; provide comfort and transport."],
+["A patient has right lower abdominal pain and keeps his knees pulled up. Next:",["Palpate firmly","Position of comfort, nothing by mouth, transport","Give water","Walk him"],1,"Suspect appendicitis."],
+["A sickle cell patient has severe pain and low SpO\u2082. Next:",["Withhold oxygen","Oxygen, position of comfort, keep warm and transport","Walk","Cold packs only"],1,"Sickle cell crisis causes pain and hypoxia."],
+["A hemophiliac has a nosebleed that won\u2019t stop. Next:",["Observe","Direct pressure, treat for shock and transport","Tilt head back","Pack it"],1,"Bleeding can be serious."],
+["A dialysis patient\u2019s fistula arm is bleeding heavily. You should:",["Take BP on that arm","Apply direct pressure and transport","Apply a tourniquet immediately without pressure","Ignore it"],1,"Direct pressure first; avoid BP checks on the access arm."],
+["After epinephrine, an anaphylaxis patient still wheezes at 10 minutes. Per protocol:",["Do nothing","Repeat the dose if available and transport","Give oral glucose","Wait 30 minutes"],1,"Follow protocol for repeat dosing and request ALS."],
+["A patient has only hives, normal vitals and no breathing difficulty. Best:",["Release","Monitor closely, oxygen as needed and transport","Give glucose","Ignore it"],1,"It can progress to anaphylaxis."],
+["Several family members have headaches and nausea in a house in winter. Suspect:",["Influenza only","Carbon monoxide; remove them and give high-flow oxygen","Food poisoning only","Anxiety"],1,"Multiple victims with headache suggest CO."],
+["A child swallowed household cleaner and is alert. Next:",["Induce vomiting","Contact poison control or medical direction and bring the container","Give milk only","Wait"],1,"Don\u2019t induce vomiting."],
+["An intoxicated patient has altered mental status. You should:",["Assume alcohol","Check glucose and consider other causes","Leave him","Restrain"],1,"Use AEIOU TIPS before blaming alcohol."],
+["After naloxone, a patient becomes agitated and vomits. Next:",["Suction and monitor; he can re-sedate","Leave","Give more food","Release"],0,"Protect the airway and keep monitoring."],
+["A violent patient must be restrained. Which is correct?",["Prone with weight on the back","Enough personnel, reasonable force and constant airway monitoring","Hogtie","Tie to the stretcher face down"],1,"Avoid positional asphyxia."],
+["A confused patient refuses transport and cannot understand the risks. You should:",["Leave","Follow protocol for implied consent and contact medical direction","Argue","Wait"],1,"Lack of capacity changes how refusal is handled."]
+];
+var BANK=0;
+function gen(c,ty){var oth=FC.filter(function(x){return x!==c});
+function ds(k){return shuf(oth.filter(function(x){return x[k]!==c[k]}).sort(function(a,b){return Math.abs(a[k].length-c[k].length)-Math.abs(b[k].length-c[k].length)}).slice(0,12)).slice(0,3).map(function(x){return x[k]})}
+var ex=c[0]+": "+c[1];
+if(ty=="f")return["Which best matches <b>"+c[0]+"</b>?",[c[1]].concat(ds(1)),0,ex];
+if(ty=="r")return["Which topic is described by: <b>"+c[1]+"</b>?",[c[0]].concat(ds(0)),0,ex];
+var tr=ty=="t",s=tr?c[1]:ds(1)[0];
+return["True or false: “<b>"+c[0]+"</b>” means: "+s,["True","False"],tr?0:1,tr?ex:"False. "+ex,1]}
+function mix(a){return shuf(a).map(function(q){if(q[4])return q;var o=shuf(q[1].map(function(t,i){return[t,i==q[2]]}));return[q[0],o.map(function(x){return x[0]}),o.findIndex(function(x){return x[1]}),q[3]]})}
+function startQuiz(fp){CUR=fp||null;BANK=fp?fp.length:Q.length+S.length;qs=fp?mix(shuf(fp).slice(0,QN)):mix(shuf(Q).slice(0,3).concat(shuf(S).slice(0,22)));qi=0;sc=0;ans=false;drawQ()}
+function drawQ(){if(qi>=qs.length){$("qc").innerHTML='<div class="card"><h2>Score: '+sc+' / '+qs.length+'</h2><p>'+(sc/qs.length>=.8?"Strong work. Review the missed topics once more.":"Revisit the Reference tab and flashcards, then retry.")+'</p><button class="btn p" id="rs">New random quiz</button></div>';$("rs").onclick=function(){startQuiz(CUR)};return}
+var q=qs[qi];$("qc").innerHTML='<div class="card"><p class="meta">Question '+(qi+1)+' of '+qs.length+' · score '+sc+' · drawn from a bank of '+BANK+'</p><p><b>'+q[0]+'</b></p>'+q[1].map(function(o,i){return'<button class="opt" data-i="'+i+'">'+o+'</button>'}).join("")+'<div id="ex"></div></div>';
+ans=false;[].forEach.call(document.querySelectorAll(".opt"),function(b){b.onclick=function(){if(ans)return;ans=true;var i=+b.dataset.i;if(i==q[2])sc++;b.classList.add(i==q[2]?"good":"bad");document.querySelectorAll(".opt")[q[2]].classList.add("good");$("ex").innerHTML='<div class="exp">'+q[3]+'</div><div class="row"><span></span><button class="btn p" id="nq">'+(qi+1<qs.length?"Next":"See score")+'</button></div>';$("nq").onclick=function(){qi++;drawQ()}}})}
+var AN=["Alcohol","Epilepsy, endocrine, electrolytes","Insulin","Opiates (overdose)","Uremia","Trauma, temperature","Infection","Poisoning, psychogenic","Shock, stroke, seizure, syncope, subarachnoid bleed, mass"];
+var AL=[["A","Alcohol","Check glucose too; don’t assume intoxication."],["E","Epilepsy, endocrine, electrolytes","Seizure disorders, thyroid and adrenal problems, and imbalances such as sodium or potassium."],["I (first)","Insulin","Both hypoglycemia and hyperglycemia/DKA."],["O","Opiates (overdose)","Includes other drug overdoses."],["U","Uremia","Kidney failure toxins build up."],["T","Trauma, temperature","Head injury; hypo- or hyperthermia."],["I (second)","Infection","Sepsis, meningitis, pneumonia, UTI."],["P","Poisoning, psychogenic","Toxins and CO; psychiatric causes."],["S","Shock, stroke, seizure, syncope, subarachnoid bleed, mass","The S covers several causes."]];
+var AC=["Alcohol","Epilepsy (seizure)","Endocrine or electrolyte imbalance","Insulin (low or high glucose)","Opiates or other overdose","Uremia (kidney failure)","Trauma (head injury)","Temperature extremes","Infection or sepsis","Poisoning","Psychogenic","Shock (poor perfusion)","Stroke","Syncope","Subarachnoid bleed or mass"];
+var AP=[["smells of alcohol, slurred speech and stumbling",0],["history of seizures, found drowsy with a bitten tongue and incontinence",1],["history of thyroid disease, fever of 104 °F, racing pulse and agitation",2],["days of vomiting, muscle cramps and confusion with abnormal electrolytes",2],["diabetic with a glucose of 38 mg/dL, sweaty and confused",3],["diabetic with glucose over 500, fruity breath and deep rapid breathing",3],["pinpoint pupils, respirations of 6 and a needle nearby",4],["took far too many sleeping pills",4],["missed dialysis, ammonia-like breath and confusion",5],["fell from a ladder, scalp laceration and growing confusion",6],["older adult on blood thinners fell and is now drowsy",6],["found in a cold garage, shivering has stopped, confused",7],["hot, flushed, dry skin and confusion after a marathon",7],["fever, stiff neck, rash and confusion",8],["older adult with fever, productive cough and new confusion",8],["urinary tract infection and new confusion in an older adult",8],["child found with an open cabinet and a spilled chemical",9],["several family members with headache and confusion in a winter house",9],["ingested antifreeze",9],["panic attack history, tingling hands and normal exam and glucose",10],["hearing voices with normal vitals and glucose",10],["BP 70/40, pale, cool, clammy and tachycardic",11],["facial droop, slurred speech and arm weakness",12],["sudden confusion, trouble finding words and right arm weakness",12],["briefly passed out after standing, now alert",13],["sudden worst headache of her life with vomiting",14],["known brain tumor with worsening headaches and confusion",14],["drank heavily and has a normal glucose",0],["patient waking slowly after convulsions",1],["diabetic skipped a meal and is trembling and confused",3]];
+var BW=["Balance","Eyes","Face","Arm","Speech","Time"];
+var BD=["sudden loss of balance or coordination","sudden vision loss or double vision","facial droop or uneven smile","arm weakness or drift","slurred or confused speech","noting when symptoms began and acting fast"];
+var BP=[["suddenly can’t walk straight and feels dizzy",0],["sudden double vision",1],["sudden loss of vision in one eye",1],["one side of the mouth droops when smiling",2],["the right arm drifts down when both are held out",3],["words are slurred and she can’t repeat a sentence",4],["stumbles and veers to one side",0],["can’t lift the left arm",3],["last seen normal at 2:15 and you note the clock time",5],["one side of the face is flat when asked to show teeth",2],["garbled speech and can’t find words",4],["sudden blurry vision in both eyes",1],["grip is weak on one side",3],["needs rapid transport because treatment is time-limited",5]];
+var BX=[
+["BE-FAST adds which two items to FAST?",["Balance and eyes","Blood pressure and ECG","Breathing and electrolytes","Bleeding and edema"],0,"B is balance and E is eyes."],
+["What does the T in BE-FAST remind you to do?",["Record the last-known-well time and transport promptly","Take a temperature","Titrate oxygen","Treat with aspirin"],0,"Time drives treatment decisions."],
+["Last known well means when the patient was:",["Last seen normal","First noticed by EMS","Found on the floor","Last at the doctor"],0,"It is the last time the patient was known to be without symptoms."],
+["A patient woke with stroke signs. Last known well is:",["Time of waking","When she went to sleep","Time of the 911 call","Unknown, so ignore it"],1,"Use the last time she was seen normal."],
+["Why check glucose in a suspected stroke?",["Hypoglycemia can mimic a stroke","It is a legal requirement","To diagnose DKA only","To predict recovery"],0,"Treat low glucose, which can look like a stroke."],
+["During the arm drift test, a positive finding is:",["One arm drifts downward","Both arms stay level","Both arms shake slightly","The patient laughs"],0,"Asymmetric drift suggests weakness."],
+["Facial droop, arm weakness and slurred speech began 40 minutes ago. Priority:",["Rapid transport to a stroke center with prenotification","Wait for improvement","Give aspirin","Let the patient sleep"],0,"Stroke is time-critical."],
+["Stroke signs resolve en route. You should:",["Still report a possible TIA or stroke and continue transport","Cancel the report","Turn around","Ignore it"],0,"TIA is a warning sign."],
+["Which finding best fits the E in BE-FAST?",["Sudden double vision","Sudden slurred speech","Weak grip","Facial droop"],0,"E stands for eyes."],
+["A patient is stumbling and dizzy but face, arms and speech are normal. Which BE-FAST item is positive?",["Balance","Face","Arm","Speech"],0,"Sudden loss of balance counts."],
+["Which stroke scale is the older three-item screen BE-FAST expands?",["Cincinnati","Glasgow","Apgar","Rule of nines"],0,"FAST comes from the Cincinnati scale."],
+["A stroke patient is vomiting and drowsy. Priority:",["Protect the airway, suction ready, and transport","Give oral glucose","Give food","Walk him"],0,"Airway comes first."]
+];
+var PD={"Oxygen":{act:"Raises blood oxygen levels",ind:"Hypoxia (SpO₂ below 94%) or respiratory distress",con:"No absolute contraindication in a hypoxic patient",rt:"Inhaled",dose:"NRB mask 10–15 L/min or nasal cannula 1–6 L/min",se:"Dries mucous membranes"},
+"Oral glucose":{act:"Raises blood sugar",ind:"Low blood sugar with altered mental status in a patient who can swallow",con:"Unresponsive or unable to swallow safely",rt:"Oral, between cheek and gum or swallowed",dose:"One tube, about 15 g",se:"Aspiration if the airway isn’t protected"},
+"Aspirin":{act:"Prevents platelets from clumping",ind:"Chest pain suspected to be cardiac",con:"Aspirin allergy or active GI bleeding",rt:"Oral, chewed",dose:"162–324 mg (two to four 81-mg chewables)",se:"Stomach upset or bleeding"},
+"Nitroglycerin":{act:"Dilates blood vessels and lowers the heart’s workload",ind:"Cardiac chest pain in a patient prescribed it",con:"Low blood pressure or recent erectile-dysfunction drug",rt:"Sublingual tablet or spray",dose:"0.4 mg, repeated per protocol",se:"Headache and low blood pressure"},
+"Albuterol":{act:"Relaxes bronchial smooth muscle (beta-2 agonist)",ind:"Wheezing or bronchospasm",con:"Allergy to the drug",rt:"Inhaled by MDI or nebulizer",dose:"2.5 mg by nebulizer",se:"Fast heart rate and tremor"},
+"Epinephrine":{act:"Constricts vessels and opens airways (alpha and beta)",ind:"Anaphylaxis with respiratory distress or shock",con:"No absolute contraindication in life-threatening anaphylaxis",rt:"Intramuscular, lateral thigh",dose:"0.3 mg adult, 0.15 mg child (about 15–30 kg)",se:"Fast heart rate, anxiety and pallor"},
+"Naloxone":{act:"Reverses opioid effects (opioid antagonist)",ind:"Suspected opioid overdose with slow or absent breathing",con:"Known allergy (use caution in opioid-dependent patients)",rt:"Intranasal or intramuscular",dose:"Commonly 2–4 mg intranasal or 0.4–2 mg IM, per protocol",se:"Agitation, vomiting and withdrawal signs"},
+"Activated charcoal":{act:"Binds poison in the gut",ind:"Certain ingested poisonings, if your protocol allows",con:"Unresponsive patient or one who can’t swallow",rt:"Oral, swallowed as a slurry",dose:"About 1 g/kg",se:"Vomiting and black stools"}};
+var PF=[["act","What is the action of <b>%</b>?"],["ind","What is the main indication for <b>%</b>?"],["con","Which is a contraindication or caution for <b>%</b>?"],["rt","What is the route for <b>%</b>?"],["dose","What is the typical dose of <b>%</b>?"],["se","Which is a common side effect of <b>%</b>?"]];
+var PS=[["A 9-year-old with asthma is wheezing and has her prescribed inhaler.","Albuterol","i"],["An adult has hives, hoarseness and BP 82/50 after eating shellfish.","Epinephrine","i"],["A conscious, confused diabetic has a glucose of 42 mg/dL and can swallow.","Oral glucose","i"],["A 60-year-old has chest pressure, no allergies and no bleeding history.","Aspirin","i"],["An unresponsive man has respirations of 5, pinpoint pupils and a needle nearby.","Naloxone","i"],["A patient has SpO₂ 86% and severe shortness of breath.","Oxygen","i"],["A conscious patient swallowed pills 30 minutes ago and your protocol allows a binding agent.","Activated charcoal","i"],["A 25-kg child has anaphylaxis with wheezing.","Epinephrine","i"],["A patient with a cardiac history has chest pain, BP 148/90 and has already had aspirin.","Nitroglycerin","i"],["A COPD patient is wheezing and has a prescribed inhaler.","Albuterol","i"],["A teenager stung by a wasp has facial swelling and stridor.","Epinephrine","i"],["A patient with glucose of 55 mg/dL is sweaty, alert and can drink.","Oral glucose","i"],["A patient is breathing 4 times a minute after heroin use.","Naloxone","i"],["A chest pain patient has BP 84/50.","Nitroglycerin","c"],["A chest pain patient took sildenafil 3 hours ago.","Nitroglycerin","c"],["An unresponsive hypoglycemic patient.","Oral glucose","c"],["A chest pain patient is vomiting blood and has a known ulcer.","Aspirin","c"],["A chest pain patient is allergic to aspirin.","Aspirin","c"],["A drowsy poisoned patient can’t swallow and has a gurgling airway.","Activated charcoal","c"],["A patient with chest pain has a headache from the first nitroglycerin and SBP of 90.","Nitroglycerin","c"]];
+function G(){var o={a:[],b:[],p:[]};
+function mk(q,r,pool,ex){var d=shuf(pool.filter(function(x){return x!=r})).slice(0,3);return[q,[r].concat(d),0,ex]}
+AL.forEach(function(x){o.a.push(mk("In AEIOU TIPS, what does <b>"+x[0]+"</b> stand for?",x[1],AN,x[2]))});
+AP.forEach(function(x){o.a.push(mk("A patient has these clues: "+x[0]+". Which AEIOU TIPS cause fits best?",AC[x[1]],AC,"Best fit: "+AC[x[1]]+"."))});
+BW.forEach(function(w,i){o.b.push(mk("In BE-FAST, what does <b>"+"BEFAST".charAt(i)+"</b> stand for?",w,BW,w+": "+BD[i]+"."));o.b.push(mk("In BE-FAST, which item checks for <b>"+BD[i]+"</b>?",w,BW,w+": "+BD[i]+"."))});
+BP.forEach(function(x){o.b.push(mk("A patient shows this: "+x[0]+". Which BE-FAST item is this?",BW[x[1]],BW,BW[x[1]]+": "+BD[x[1]]+"."))});
+BX.forEach(function(q){o.b.push(q)});
+var N=Object.keys(PD);
+N.forEach(function(n){PF.forEach(function(f){var pool=N.map(function(m){return PD[m][f[0]]});o.p.push(mk(f[1].replace("%",n),PD[n][f[0]],pool,n+": "+PD[n][f[0]]+"."))});
+o.p.push(mk("Which medication is described: <b>"+PD[n].ind+"</b>?",n,N,n+": "+PD[n].ind+"."));o.p.push(mk("Which medication <b>"+PD[n].act.toLowerCase()+"</b>?",n,N,n+": "+PD[n].act+"."))});
+PS.forEach(function(x){o.p.push(mk(x[0]+(x[2]=="i"?" Which medication is indicated?":" Which medication is contraindicated?"),x[1],N,x[1]+(x[2]=="i"?" is indicated here.":" should be withheld here.")))});
+o.all=o.a.concat(o.b,o.p);return o}
+
+var FQ=G();
+var ALLWB=[];TOPS.forEach(function(x){ALLWB=ALLWB.concat(TQ[x[0]])});
+var MIXED=Q.concat(S,ALLWB);
+var QSETS=[["m","Mixed medical",MIXED],["a","AEIOU TIPS",FQ.a],["b","BE-FAST",FQ.b],["p","EMT pharmacology",FQ.p]].concat(TOPS.map(function(x){return["t_"+x[0],x[1],TQ[x[0]]]})).concat([["all","Everything",Q.concat(S,FQ.all,ALLWB)]]);
+$("quiz").innerHTML='<div class="card"><p class="meta" style="margin:0 0 8px">Choose a quiz (25 random questions each)</p><div class="row" style="justify-content:flex-start;margin:0">'+QSETS.map(function(x){return'<button class="btn qm" data-k="'+x[0]+'">'+x[1]+' ('+x[2].length+')</button>'}).join("")+'</div></div><div id="qc" style="margin-top:12px"></div>';
+[].forEach.call(document.querySelectorAll(".qm"),function(b){b.onclick=function(){var s=QSETS.filter(function(x){return x[0]==b.dataset.k})[0];startQuiz(s[2])}});
+startQuiz(MIXED);
+var BK=[["hand","Hand-written scenarios and recall",S.concat(Q)],["a","AEIOU TIPS",FQ.a],["b","BE-FAST",FQ.b],["p","EMT pharmacology",FQ.p]].concat(TOPS.map(function(x){return["t_"+x[0],x[1],TQ[x[0]]]}));
+BK.forEach(function(k){k[2]=k[2].map(function(q){return q[4]?q:mix([q])[0]})});
+var bf="hand",bs=false;
+function bdraw(){var set=BK.filter(function(k){return k[0]==bf})[0];var L=set[2];
+var h='<div class="row" style="justify-content:flex-start">'+BK.map(function(k){return'<button class="btn bf'+(bf==k[0]?" p":"")+'" data-f="'+k[0]+'">'+k[1]+' ('+k[2].length+')</button>'}).join("")+'</div><div class="row" style="justify-content:flex-start"><label class="meta"><input type="checkbox" id="bsa"'+(bs?" checked":"")+'> Show all answers</label></div><p class="meta">Tap an answer to check it. Showing '+L.length+' questions. Quizzes draw from these sets.</p>';
+L.forEach(function(q,n){h+='<div class="card" style="margin-top:10px"><p class="meta">#'+(n+1)+' · '+set[1]+'</p><p><b>'+q[0]+'</b></p>'+q[1].map(function(o,i){return'<button class="opt'+(bs&&i==q[2]?" good":"")+'" data-n="'+n+'" data-i="'+i+'">'+String.fromCharCode(65+i)+". "+o+'</button>'}).join("")+'<div class="exp" id="bx'+n+'"'+(bs?"":" hidden")+'><b>Answer: '+String.fromCharCode(65+q[2])+'.</b> '+q[3]+'</div></div>'});
+$("bank").innerHTML=h;
+[].forEach.call(document.querySelectorAll(".bf"),function(b){b.onclick=function(){bf=b.dataset.f;bdraw()}});
+$("bsa").onchange=function(){bs=this.checked;bdraw()};
+[].forEach.call(document.querySelectorAll("#bank .opt"),function(b){b.onclick=function(){var n=b.dataset.n,i=+b.dataset.i,q=L[n];[].forEach.call(document.querySelectorAll('.opt[data-n="'+n+'"]'),function(o){if(+o.dataset.i==q[2])o.classList.add("good")});if(i!=q[2])b.classList.add("bad");$("bx"+n).hidden=false}})}
+bdraw();
+$("new").innerHTML=`<div class="card"><h2 style="margin-top:0">Recent changes to know</h2><ul>
+<li><b>2025 AHA/ILCOR CPR and ECC guidelines:</b> few big changes, but they stress early recognition and early defibrillation, minimizing interruptions (pauses under 10 seconds for pediatric arrest), and controlled, effective bag-mask ventilation. Routine mechanical CPR devices are not recommended for adult arrest.</li>
+<li><b>Choking:</b> for responsive adults and children, alternate 5 back blows with 5 abdominal thrusts until clear or the person becomes unresponsive, then begin CPR. Infants: back blows and chest thrusts (no abdominal thrusts).</li>
+<li><b>Opioid overdose:</b> a formal algorithm now covers naloxone plus CPR.</li>
+<li><b>2024 AHA/Red Cross first aid:</b> for life-threatening bleeding, apply direct pressure, then a tourniquet or wound packing if the wound location allows.</li>
+<li><b>2021 National Field Triage Guideline:</b> <mark>Red</mark> criteria (e.g., penetrating head/neck/torso/proximal limb, flail chest, suspected pelvic fracture, two or more proximal long-bone fractures, amputation proximal to wrist or ankle, bleeding needing a tourniquet or packing, plus abnormal mental status or vital signs) go to the highest-level trauma center. <mark>Yellow</mark> criteria go to a trauma center, not necessarily the highest level.</li>
+<li><b>Spinal motion restriction:</b> modern EMS guidelines use selective SMR (collar and stretcher) rather than automatic long-board immobilization, and penetrating neck or torso trauma alone is not an SMR indication. Your textbook’s “immobilization” language reflects the older approach.</li></ul>
+<div class="note">Local protocols and your medical director always override this tool. Use it to study, not as a clinical reference. Check your state’s adoption date for the 2025 AHA guidelines, since agencies roll out updates on different schedules.</div></div>`;
+</script>
+</body>
+</html>
+
+</body></html>
